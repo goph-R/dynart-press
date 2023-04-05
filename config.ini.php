@@ -3,9 +3,9 @@
 log.level = "debug"
 log.dir = "./logs"
 
-app.base_url = "http://192.168.1.104/press"
+app.base_url = "http://192.168.1.104/dynart-press"
 app.index_file = "index.php"
-app.path_root = "c:/xampp/htdocs/press"
+app.path_root = "c:/xampp/htdocs/dynart-press"
 app.route_parameter = "route"
 app.salt = "PD9waHAKCm5hbWVzcGFjZSBEeW5hcnRcTWljcm87CgpjbGFzcyBBc"
 app.use_annotations = true
