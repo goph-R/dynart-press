@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="initial-scale=1" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css" media="all">
+    <link rel="stylesheet" href="<?= url('/static/style.css') ?>" media="all">
+    <link rel="stylesheet" href="<?= url('/static/admin.css') ?>" media="all">
+    <link rel="stylesheet" href="<?= site_url('/style.css') ?>" media="all">
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js" integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>
+    <script type="module" src="<?= url('/admin/static/admin-app.js') ?>"></script>
+    <?= $this->fetch('layout-styles') ?>
+</head>
+<body>
+<div class="site-container">
+    <header>
+        <div class="logo"><a href="<?= base_url().'?dir='.@$_GET['dir'] ?>"><img src="<?= site_url('/logo.png') ?>"></a></div>
+        <form action="<?= base_url() ?>">
+            <div class="search-form">
+                <input type="hidden" name="dir" value="<?= esc_attr(@$_GET['dir']) ?>">
+                <input class="input input-search" type="text" name="search" value="<?= esc_attr(@$_GET['search']) ?>"><button class="button button-search"><i class="fa-solid fa-magnifying-glass"></i></button>
+            </div>
+        </form>
+    </header>
+    <main>
+        <?= $this->block('content') ?>
+    </main>
+<!--    <footer>
+        GrannySluts &copy; <?= date('Y') ?>
+    </footer>-->
+</div>
+
+<!--<script src="<?= site_url('/parallax.min.js') ?>"></script>
+<script>
+    $('.site-container').parallax({imageSrc: '<?= site_url('/bg.png') ?>'});
+</script>-->
+<script>
+$(window).scroll(function() {
+    const top = $(document).scrollTop();
+    //window.requestAnimationFrame(function() {
+        $('body').css('background-position',  '0 ' + (top / 1.35) + 'px');
+    //})
+});
+</script>
+<?= $this->fetch('layout-scripts') ?>
+<?= $this->block('scripts') ?>
+</body>
+</html>

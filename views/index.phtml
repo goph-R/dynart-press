@@ -1,0 +1,45 @@
+<?php $this->useLayout('layout') ?>
+<?php $this->startBlock('content') ?>
+<div class="posts">
+    <div class="row">
+        <?php foreach ($imageColumns as $images): ?>
+            <div class="col col-33 col-sm-100">
+                <?php foreach ($images as $image): ?>
+                    <div class="post-container">
+                        <div class="post">
+                            <div class="post-featured-image">
+                                <a data-pswp-width="<?= $image['width'] ?>" data-pswp-height="<?= $image['height'] ?>" href="<?= url('/'.$mediaDir.'/'.$dir.'/'.$image['path']) ?>">
+                                    <img src="<?= getthumb_url($mediaDir.'/'.$dir.'/'.$image['path']) ?>">
+                                </a>
+                            </div>
+
+                            <h1 class="post-title" style="display: <?= $image['title'] ? 'block' : 'none' ?>">
+                                <?= $image['title'] ?>
+                            </h1>
+                            <ul class="post-tags" style="display: <?= $image['tags'] ? 'block' : 'none' ?>">
+                            </ul>
+                            <button class="button post-edit-button">
+                                <i class="fa-solid fa-file-pen"></i>
+                                <span>Edit</span>
+                            </button>
+                            <i class="post-view-icon fa-solid fa-magnifying-glass"></i>
+                        </div>
+                    </div>
+                <?php endforeach ?>
+            </div>
+        <?php endforeach ?>
+    </div>
+</div>
+<?php $this->endBlock() ?>
+<?php $this->startBlock('scripts') ?>
+<?php $this->addStyle('/static/photoswipe/photoswipe.css') ?>
+<script type="module">
+    import PhotoSwipeLightbox from '<?= url('/static/photoswipe/photoswipe-lightbox.esm.min.js') ?>';
+    const lightbox = new PhotoSwipeLightbox({
+        gallery: '.posts',
+        children: 'a',
+        pswpModule: () => import('<?= url('/static/photoswipe/photoswipe.esm.min.js'); ?>')
+    });
+    lightbox.callFromUrl();
+</script>
+<?php $this->endBlock() ?>

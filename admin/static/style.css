@@ -1,0 +1,61 @@
+
+.admin-content {
+    display: flex;
+    flex-wrap: wrap;
+}
+.admin-inner-content {
+    flex-basis: 0;
+    flex-grow: 999;
+}
+.admin-nav-bar {
+    flex-grow: 1;
+    min-height: 100vh;
+    background-color: #333;
+}
+.admin-nav {
+    padding: 0.5em 0;
+}
+.admin-nav a {
+    display: block;
+    padding: 0.25em 2em 0.25em 1em;
+}
+.admin-nav i {
+    width: 1.2em;
+    text-align: center;
+    font-size: 1.2em;
+    line-height: 1.5em;
+    position: absolute;
+    color: #999;
+}
+.admin-nav span {
+    padding-left: 2.0em;
+    color: #aaa;
+    font-size: 0.9em;
+
+}
+.admin-nav li {
+    display: block;
+    line-height: 1.8em;
+    cursor: pointer;
+}
+.admin-nav li ul {
+    padding-top: 0.5em;
+    display: none;
+}
+.admin-nav a:hover {
+    text-decoration: none;
+}
+.admin-page {
+    display: none;
+}
+.admin-page h1 {
+    margin: 1em;
+    font-weight: bold;
+    font-size: 2em;
+}
+
+/* Mobile */
+@media only screen and (max-width: 767px) {
+    .admin-nav-bar { display: none }
+}
+
