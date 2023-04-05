@@ -26,6 +26,10 @@ class HomeController {
         $this->mediaDir = $config->get('photos.media_dir');
     }
 
+    /**
+     * @route GET /
+     */
+
     public function index() {
         $dir = $this->request->get('dir');
 
@@ -56,6 +60,15 @@ class HomeController {
             'imageColumns' => $columns,
             'dir' => $dir,
             'mediaDir' => $this->mediaDir
+        ]);
+    }
+
+    /**
+     * @route GET /test
+     */
+    public function test() {
+        return $this->view->fetch('test', [
+
         ]);
     }
 }

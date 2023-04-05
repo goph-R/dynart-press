@@ -12,8 +12,9 @@
 </head>
 <body>
 <div class="site-container">
+    <p>Locale: <?= \Dynart\Micro\App::instance()->get(\Dynart\Micro\I18n\Translation::class)->locale() ?></p>
     <header>
-        <div class="logo"><a href="<?= base_url().'?dir='.@$_GET['dir'] ?>"><img src="<?= site_url('/logo.png') ?>"></a></div>
+        <div class="logo"><a href="<?= route_url('/', ['dir' => @$_GET['dir']]) ?>"><img src="<?= site_url('/logo.png') ?>"></a></div>
         <form action="<?= base_url() ?>">
             <div class="search-form">
                 <input type="hidden" name="dir" value="<?= esc_attr(@$_GET['dir']) ?>">
@@ -36,6 +37,7 @@ $(window).scroll(function() {
         $('body').css('background-position',  '0 ' + (top / 1.35) + 'px');
     //})
 });
+
 </script>
 <?= $this->fetch('layout-scripts') ?>
 <?= $this->block('scripts') ?>

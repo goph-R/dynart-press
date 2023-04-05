@@ -1,4 +1,6 @@
-
+:root {
+    --default-font-family: -apple-system, "Segoe UI", sans-serif;
+}
 .admin-content {
     display: flex;
     flex-wrap: wrap;

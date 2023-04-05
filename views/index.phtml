@@ -40,6 +40,6 @@
         children: 'a',
         pswpModule: () => import('<?= url('/static/photoswipe/photoswipe.esm.min.js'); ?>')
     });
-    lightbox.callFromUrl();
+    lightbox.init();
 </script>
 <?php $this->endBlock() ?>

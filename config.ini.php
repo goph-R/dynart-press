@@ -5,12 +5,15 @@ log.dir = "./logs"
 
 app.base_url = "http://192.168.1.104/dynart-press"
 app.index_file = "index.php"
-app.path_root = "c:/xampp/htdocs/dynart-press"
+app.root_path = "c:/xampp/htdocs/dynart-press"
 app.route_parameter = "route"
 app.salt = "PD9waHAKCm5hbWVzcGFjZSBEeW5hcnRcTWljcm87CgpjbGFzcyBBc"
 app.use_annotations = true
 app.use_rewrite = false
 app.views_folder = "views"
+
+translation.all = hu,en
+translation.default = en
 
 database.default.name = "photos"
 database.default.dsn = "mysql:localhost"
