@@ -21,7 +21,7 @@ class DashboardController {
      * @return string
      */
     public function index() {
-        return $this->view->fetch('index');
+        return $this->view->fetch('admin:index');
     }
 
     /**

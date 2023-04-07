@@ -6,13 +6,12 @@
     <link rel="stylesheet" href="<?= url('/static/style.css') ?>" media="all">
     <link rel="stylesheet" href="<?= url('/static/admin.css') ?>" media="all">
     <link rel="stylesheet" href="<?= site_url('/style.css') ?>" media="all">
-    <script src="https://code.jquery.com/jquery-3.6.4.min.js" integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>
-    <script type="module" src="<?= url('/admin/static/admin-app.js') ?>"></script>
-    <?= $this->fetch('layout-styles') ?>
+    <?php foreach ($this->styles() as $url => $attributes): ?>
+        <link rel="stylesheet" type="text/css" href="<?= url($url) ?>"<?= esc_attrs($attributes) ?>>
+    <?php endforeach ?>
 </head>
 <body>
 <div class="site-container">
-    <p>Locale: <?= \Dynart\Micro\App::instance()->get(\Dynart\Micro\I18n\Translation::class)->locale() ?></p>
     <header>
         <div class="logo"><a href="<?= route_url('/', ['dir' => @$_GET['dir']]) ?>"><img src="<?= site_url('/logo.png') ?>"></a></div>
         <form action="<?= base_url() ?>">
@@ -28,8 +27,10 @@
     <footer>
         Copyright <?= date('Y') ?>
     </footer>
+    <?= tr('press:test') ?>
 </div>
-
+<script src="https://code.jquery.com/jquery-3.6.4.min.js" integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>
+<script type="module" src="<?= url('/admin/static/admin-app.js') ?>"></script>
 <script>
 $(window).scroll(function() {
     const top = $(document).scrollTop();
@@ -39,7 +40,9 @@ $(window).scroll(function() {
 });
 
 </script>
-<?= $this->fetch('layout-scripts') ?>
+<?php foreach ($this->scripts() as $url => $attributes): ?>
+    <script src="<?= url($url) ?>"<?= esc_attrs($attributes) ?>></script>
+<?php endforeach ?>
 <?= $this->block('scripts') ?>
 </body>
 </html>

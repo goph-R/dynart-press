@@ -2,11 +2,9 @@
 
 namespace Dynart\Press;
 
-use Dynart\Micro\I18n\LocaleResolver;
-use Dynart\Micro\I18n\Translation;
+use Dynart\Micro\LocaleResolver;
+use Dynart\Micro\Translation;
 use Dynart\Micro\WebApp;
-
-require_once 'views/functions.php';
 
 class PressApp extends WebApp {
 

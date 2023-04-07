@@ -5,7 +5,9 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="<?= url('/static/style.css') ?>" media="all">
     <link rel="stylesheet" href="<?= url('/admin/static/style.css') ?>" media="all">
-    <?= $this->fetch('layout-styles') ?>
+    <?php foreach ($this->styles() as $url => $attributes): ?>
+        <link rel="stylesheet" type="text/css" href="<?= url($url) ?>"<?= esc_attrs($attributes) ?>>
+    <?php endforeach ?>
 </head>
 <body class="admin">
 <div class="admin-site-container">
@@ -14,7 +16,9 @@
     </main>
 </div>
 <script src="https://code.jquery.com/jquery-3.6.4.min.js" integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>
-<?= $this->fetch('layout-scripts') ?>
+<?php foreach ($this->scripts() as $url => $attributes): ?>
+    <script src="<?= url($url) ?>"<?= esc_attrs($attributes) ?>></script>
+<?php endforeach ?>
 <?= $this->block('scripts') ?>
 </body>
 </html>

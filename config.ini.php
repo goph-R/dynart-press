@@ -10,7 +10,7 @@ app.route_parameter = "route"
 app.salt = "PD9waHAKCm5hbWVzcGFjZSBEeW5hcnRcTWljcm87CgpjbGFzcyBBc"
 app.use_annotations = true
 app.use_rewrite = false
-app.views_folder = "views"
+app.views_folder = "~/views"
 
 translation.all = hu,en
 translation.default = en
