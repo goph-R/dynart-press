@@ -7,7 +7,7 @@
         "psr-4": {
             "Dynart\\Press\\": "src/",
             "Dynart\\Press\\Admin\\": "admin/src/",
-            "Dynart\\Press\\Plugin\\": "plugins/"
+            "Dynart\\Press\\Plugin\\": "content/plugins/"
         }
     },
     "authors": [
