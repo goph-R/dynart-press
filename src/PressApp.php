@@ -13,14 +13,16 @@ class PressApp extends WebApp {
 
     public function __construct(array $configPaths) {
         parent::__construct($configPaths);
+
         $this->add(Database::class);
         $this->add(Translation::class);
         $this->add(RouteAnnotation::class);
+        $this->addMiddleware(LocaleResolver::class);
+        $this->addMiddleware(AnnotationProcessor::class);
+
         $this->add(Service\ImageService::class);
         $this->add(Service\ImageRepository::class);
         $this->add(Controller\HomeController::class);
-        $this->addMiddleware(LocaleResolver::class);
-        $this->addMiddleware(AnnotationProcessor::class);
     }
 
     public function init() {

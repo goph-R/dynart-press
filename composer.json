@@ -5,7 +5,9 @@
     "license": "MIT",
     "autoload": {
         "psr-4": {
-            "Dynart\\Press\\": "src/"
+            "Dynart\\Press\\": "src/",
+            "Dynart\\Press\\Admin\\": "admin/src/",
+            "Dynart\\Press\\Plugin\\": "plugins/"
         }
     },
     "authors": [

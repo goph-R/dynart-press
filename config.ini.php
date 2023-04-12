@@ -22,7 +22,7 @@ database.default.password = ""
 
 mailer.fake = true
 
-photos.getthumb_prefix = "/getthumb/index.php?src=../"
-photos.media_dir = "media"
+photos.getthumb_prefix = "/content/getthumb/index.php?src=../../"
+photos.media_dir = "content/media"
 
  ;*/

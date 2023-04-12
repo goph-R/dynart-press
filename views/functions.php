@@ -5,7 +5,7 @@ use Dynart\Micro\Config;
 use Dynart\Micro\Request;
 
 function site_url(string $uri, bool $withMTime = true) {
-    return url('/sites/'.App::instance()->get(Request::class)->get('dir').$uri, $withMTime);
+    return url('/content/sites/'.App::instance()->get(Request::class)->get('dir').$uri, $withMTime);
 }
 
 function getthumb_url($uri) {
