@@ -5,7 +5,6 @@ log.dir = "./logs"
 
 app.base_url = "http://192.168.1.104/dynart-press"
 app.root_path = "c:/xampp/htdocs/dynart-press"
-app.use_annotations = true
 
 router.index_file = "index.php"
 router.route_parameter = "route"

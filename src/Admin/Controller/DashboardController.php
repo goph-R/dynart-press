@@ -1,6 +1,6 @@
 <?php
 
-namespace Dynart\Press\Admin;
+namespace Dynart\Press\Admin\Controller;
 
 use Dynart\Micro\View;
 

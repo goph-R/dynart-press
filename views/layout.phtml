@@ -13,11 +13,11 @@
 <body>
 <div class="site-container">
     <header>
-        <div class="logo"><a href="<?= route_url('/', ['dir' => @$_GET['dir']]) ?>"><img src="<?= site_url('/logo.png') ?>"></a></div>
+        <div class="logo"><a href="<?= route_url('/', ['dir' => $dir]) ?>"><img src="<?= site_url('/logo.png') ?>"></a></div>
         <form action="<?= base_url() ?>">
             <div class="search-form">
-                <input type="hidden" name="dir" value="<?= esc_attr(@$_GET['dir']) ?>">
-                <input class="input input-search" type="text" name="search" value="<?= esc_attr(@$_GET['search']) ?>"><button class="button button-search"><i class="fa-solid fa-magnifying-glass"></i></button>
+                <input type="hidden" name="dir" value="<?= esc_attr($dir) ?>">
+                <input class="input input-search" type="text" name="search" value="<?= esc_attr($search) ?>"><button class="button button-search"><i class="fa-solid fa-magnifying-glass"></i></button>
             </div>
         </form>
     </header>
@@ -34,11 +34,8 @@
 <script>
 $(window).scroll(function() {
     const top = $(document).scrollTop();
-    //window.requestAnimationFrame(function() {
-        $('body').css('background-position',  '0 ' + (top / 1.35) + 'px');
-    //})
+    $('body').css('background-position',  '0 ' + (top / 1.35) + 'px');
 });
-
 </script>
 <?php foreach ($this->scripts() as $url => $attributes): ?>
     <script src="<?= url($url) ?>"<?= esc_attrs($attributes) ?>></script>

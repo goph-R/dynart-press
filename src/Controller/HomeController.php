@@ -1,10 +1,12 @@
 <?php
 
-namespace Dynart\Press;
+namespace Dynart\Press\Controller;
 
 use Dynart\Micro\Request;
 use Dynart\Micro\View;
 use Dynart\Micro\Config;
+
+use Dynart\Press\Service\ImageService;
 
 class HomeController {
 
@@ -32,6 +34,7 @@ class HomeController {
 
     public function index() {
         $dir = $this->request->get('dir');
+        $search = $this->request->get('search');
 
         $this->imageService->init($dir);
         $this->imageService->sync();
@@ -59,6 +62,7 @@ class HomeController {
         return $this->view->fetch('index', [
             'imageColumns' => $columns,
             'dir' => $dir,
+            'search' => $search,
             'mediaDir' => $this->mediaDir
         ]);
     }

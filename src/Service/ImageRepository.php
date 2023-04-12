@@ -1,6 +1,6 @@
 <?php
 
-namespace Dynart\Press;
+namespace Dynart\Press\Service;
 
 use Dynart\Micro\Repository;
 
