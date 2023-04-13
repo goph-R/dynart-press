@@ -2,9 +2,7 @@
 
 namespace Dynart\Press\Service;
 
-use Dynart\Micro\App;
 use Dynart\Micro\Database\Repository;
-use Dynart\Press\Something;
 
 class ImageRepository extends Repository {
 
@@ -21,8 +19,6 @@ class ImageRepository extends Repository {
     ];
 
     protected function getWhere(array $params) {
-        App::instance()->get(Something::class);
-
         if (isset($params['dir'])) {
             $result = 'WHERE dir = :dir';
             $this->sqlParams[':dir'] = $params['dir'];
