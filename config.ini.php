@@ -3,8 +3,10 @@
 log.level = "debug"
 log.dir = "./logs"
 
+app.environment = "dev"
 app.base_url = "http://192.168.1.104/dynart-press"
 app.root_path = "c:/xampp/htdocs/dynart-press"
+app.error_pages_folder = "~/static/errors"
 
 router.index_file = "index.php"
 router.route_parameter = "route"

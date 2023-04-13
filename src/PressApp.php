@@ -11,6 +11,21 @@ use Dynart\Micro\Annotation\RouteAnnotation;
 use Dynart\Micro\Translation;
 use Dynart\Micro\WebApp;
 
+class Something3 {
+    public function __construct(Something2 $s) {
+    }
+}
+
+class Something2 {
+    public function __construct(Something $s) {
+    }
+}
+
+class Something {
+    public function __construct(Something3 $s) {
+    }
+}
+
 class PressApp extends WebApp {
 
     public function __construct(array $configPaths) {
@@ -26,6 +41,10 @@ class PressApp extends WebApp {
         $this->add(Service\ImageService::class);
         $this->add(Service\ImageRepository::class);
         $this->add(Controller\HomeController::class);
+
+        $this->add(Something::class);
+        $this->add(Something2::class);
+        $this->add(Something3::class);
 
         $annotations = $this->get(AnnotationProcessor::class);
         $annotations->addNamespace('Dynart\\Press\\Controller');
