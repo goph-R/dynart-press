@@ -1,6 +1,6 @@
 <?php
 
-namespace Dynart\Press\Entities;
+namespace Dynart\Press\Entity;
 
 use Dynart\Press\NodeType;
 

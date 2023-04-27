@@ -4,7 +4,7 @@ namespace Dynart\Press;
 
 use Dynart\Micro\App;
 use Dynart\Press\Service\EventManager;
-use Dynart\Press\Entities\Node;
+use Dynart\Press\Entity\Node;
 
 abstract class NodeType {
 
