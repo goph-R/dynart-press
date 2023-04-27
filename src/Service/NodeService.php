@@ -9,9 +9,6 @@ use Dynart\Micro\Entities\Entity;
 
 use Dynart\Press\Entity\Node;
 use Dynart\Press\Entity\NodeEntity;
-use Dynart\Press\Service\EventService;
-use Dynart\Press\Service\NowProvider;
-use Dynart\Press\Service\UserService;
 
 class NodeService {
 

@@ -6,6 +6,9 @@ use Dynart\Micro\Entities\Entity;
 
 class Node extends Entity {
 
+    const EVENT_BEFORE_SAVE = 'node:before_save';
+    const EVENT_AFTER_SAVE = 'node:after_save';
+
     /** @column { "type": "int", "notNull": true, "primaryKey": true, "autoIncrement": true } */
     public $id;
 

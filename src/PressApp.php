@@ -79,19 +79,14 @@ class PressApp extends WebApp {
             /** @var Translation $translation */
             $translation = $this->get(Translation::class);
             $translation->add('press', '~/translations');
-
             /*
-            $db = $this->get(Database::class);
-            $nodeService = $this->get(NodeService::class);
-
-            $db->runInTransaction(function () use ($nodeService) {
-                $plugin = new Plugin();
-                $plugin->active = 1;
-                $plugin->name = 'Test';
-                $nodeService->save($plugin);
+            $eventService = $this->get(EventService::class);
+            $eventService->subscribe(User::EVENT_BEFORE_SAVE, function(User $user) {
+                var_dump($user);
             });
 
-
+            $db = $this->get(Database::class);
+            $nodeService = $this->get(NodeService::class);
             $db->runInTransaction(function () use ($nodeService) {
                 $user = new User();
                 $user->active = 1;
@@ -99,11 +94,19 @@ class PressApp extends WebApp {
                 $user->password = 'password';
                 $nodeService->save($user);
             });
+
+            $db->runInTransaction(function () use ($nodeService) {
+                $plugin = new Plugin();
+                $plugin->active = 1;
+                $plugin->name = 'Test';
+                $nodeService->save($plugin);
+            });
             */
 
             /** @var PluginService $plugins */
             $plugins = $this->get(PluginService::class);
             $plugins->init();
+
         } catch (\Exception $e) {
             $this->handleException($e);
         }

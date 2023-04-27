@@ -6,11 +6,15 @@ class EventService {
 
     protected $subscriptions = [];
 
-    public function subscribe(string $event, &$callable): void {
+    public function tempSubscribe(string $event, &$callable): void {
         if (!array_key_exists($event, $this->subscriptions)) {
             $this->subscriptions[$event] = [];
         }
         $this->subscriptions[$event][] = $callable;
+    }
+
+    public function subscribe(string $event, $callable): void {
+        $this->tempSubscribe($event, $callable);
     }
 
     public function unsubscribe(string $event, &$callable): bool {
@@ -33,7 +37,7 @@ class EventService {
     public function emit(string $event, array $args): void {
         if (array_key_exists($event, $this->subscriptions)) {
             foreach ($this->subscriptions[$event] as $callable) {
-                call_user_func_array($callable, [$args]);
+                call_user_func_array($callable, $args);
             }
         }
     }
