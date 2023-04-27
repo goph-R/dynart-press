@@ -1,5 +1,10 @@
 <?php
 
+$str = "sql query !with '!with' \"!with\" !with";
+$newStr = preg_replace('/(?<!["\'])\!with\b/', '', $str);
+echo $newStr;
+
+/*
 require_once __DIR__ . '/vendor/autoload.php';
 
 use Dynart\Micro\Config;
@@ -22,3 +27,4 @@ try {
 }
 
 $db->fetch(file_get_contents());
+*/

@@ -2,9 +2,7 @@
 
 namespace Dynart\Press\Entity;
 
-use Dynart\Press\NodeType;
-
-class Plugin extends NodeType {
+class Plugin extends NodeEntity {
 
     /** @column { "type": "int", "notNull": true, "primaryKey": true } */
     public $id;
