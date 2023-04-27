@@ -2,6 +2,6 @@
 
 namespace Dynart\Press;
 
-interface Plugin {
+interface PluginInterface {
     public function init();
 }

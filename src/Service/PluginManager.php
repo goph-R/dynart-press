@@ -5,14 +5,14 @@ namespace Dynart\Press\Service;
 use Dynart\Micro\App;
 use Dynart\Micro\Middleware;
 
-use Dynart\Press\Plugin;
+use Dynart\Press\PluginInterface;
 
 class PluginManager implements Middleware {
 
     /** @var PluginRepository */
     private $repository;
 
-    /** @var Plugin[] */
+    /** @var PluginInterface[] */
     private $activePlugins = [];
 
     public function __construct(PluginRepository $repository) {

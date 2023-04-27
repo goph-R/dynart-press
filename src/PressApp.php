@@ -43,6 +43,8 @@ class PressApp extends WebApp {
         $annotations = $this->get(AnnotationProcessor::class);
         $annotations->addNamespace('Dynart\\Press\\Controller');
         $annotations->add(RouteAnnotation::class);
+        //$annotations->addNamespace('Dynart\\Press\\Entity');
+        //$annotations->add(ColumnAnnotation::class);
     }
 
     public function init() {
