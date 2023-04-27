@@ -12,6 +12,9 @@ use Dynart\Micro\Translation;
 use Dynart\Micro\View;
 use Dynart\Micro\WebApp;
 
+use Dynart\Press\Service\PluginRepository;
+use Dynart\Press\Service\PluginManager;
+
 class AdminApp extends WebApp {
 
     public function __construct(array $configPaths) {
@@ -19,16 +22,25 @@ class AdminApp extends WebApp {
 
         $this->add(PdoBuilder::class);
         $this->add(Database::class, MariaDatabase::class);
+
         $this->add(Translation::class);
-        $this->add(RouteAnnotation::class);
         $this->addMiddleware(LocaleResolver::class);
+
+        $this->add(RouteAnnotation::class);
         $this->addMiddleware(AnnotationProcessor::class);
 
+        $this->add(PluginRepository::class);
+        $this->addMiddleware(PluginManager::class);
+
         $this->add(Controller\DashboardController::class);
+
+        $pluginManager = $this->get(PluginManager::class);
+        $pluginManager->init();
 
         $annotations = $this->get(AnnotationProcessor::class);
         $annotations->addNamespace('Dynart\\Press\\Admin\\Controller');
         $annotations->add(RouteAnnotation::class);
+
     }
 
     public function init() {

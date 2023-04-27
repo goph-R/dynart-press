@@ -19,6 +19,7 @@ class ImageRepository extends Repository {
     ];
 
     protected function getWhere(array $params) {
+        $result = '';
         if (isset($params['dir'])) {
             $result = 'WHERE dir = :dir';
             $this->sqlParams[':dir'] = $params['dir'];

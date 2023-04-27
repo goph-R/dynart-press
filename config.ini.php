@@ -1,7 +1,7 @@
 ;<?php /*
 
 log.level = "debug"
-log.dir = "./logs"
+log.dir = "c:/xampp/htdocs/dynart-press/content/logs"
 
 app.environment = "dev"
 app.base_url = "http://192.168.1.104/dynart-press"
@@ -21,6 +21,7 @@ database.default.name = "photos"
 database.default.dsn = "mysql:localhost"
 database.default.username = "root"
 database.default.password = ""
+database.default.table_prefix = "dp"
 
 mailer.fake = true
 

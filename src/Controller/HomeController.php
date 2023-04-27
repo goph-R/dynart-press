@@ -33,8 +33,8 @@ class HomeController {
      */
 
     public function index() {
-        $dir = $this->request->get('dir');
-        $search = $this->request->get('search');
+        $dir = $this->request->get('dir', '');
+        $search = $this->request->get('search', '');
 
         $this->imageService->init($dir);
         $this->imageService->sync();
