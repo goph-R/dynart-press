@@ -7,7 +7,7 @@ use Dynart\Micro\Middleware;
 
 use Dynart\Press\PluginInterface;
 
-class PluginManager implements Middleware {
+class PluginService implements Middleware {
 
     /** @var PluginRepository */
     private $repository;
@@ -25,13 +25,19 @@ class PluginManager implements Middleware {
         foreach ($names as $name) { // TODO: dependency?
             $class = "Dynart\\Press\\Plugin\\{$name}\\{$name}Plugin";
             $app->add($class);
-            $activePlugins[] = $app->get($class);
+            $this->activePlugins[] = $app->get($class);
         }
     }
 
     public function init(): void {
         foreach ($this->activePlugins as $plugin) {
             $plugin->init();
+        }
+    }
+
+    public function adminInit(): void {
+        foreach ($this->activePlugins as $plugin) {
+            $plugin->adminInit();
         }
     }
 

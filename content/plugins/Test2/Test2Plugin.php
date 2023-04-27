@@ -6,8 +6,12 @@ use Dynart\Press\PluginInterface;
 
 class Test2Plugin implements PluginInterface {
 
-    public function init() {
-        echo "Test2Plugin was initialized.";
+    public function __construct() {
     }
 
+    public function init() {
+    }
+
+    public function adminInit() {
+    }
 }

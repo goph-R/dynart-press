@@ -2,7 +2,7 @@
 
 namespace Dynart\Press\Service;
 
-class EventManager {
+class EventService {
 
     protected $subscriptions = [];
 

@@ -6,24 +6,24 @@ use Dynart\Micro\Request;
 use Dynart\Micro\View;
 use Dynart\Micro\Config;
 
-use Dynart\Press\Service\ImageService;
+use Dynart\Press\Service\MediaService;
 
 class HomeController {
 
     /** @var Request */
     private $request;
 
-    /** @var ImageService */
-    private $imageService;
+    /** @var MediaService */
+    private $mediaService;
 
     /** @var View */
     private $view;
 
     private $mediaDir;
 
-    public function __construct(Config $config, Request $request, View $view, ImageService $imageService) {
+    public function __construct(Config $config, Request $request, View $view, MediaService $mediaService) {
         $this->request = $request;
-        $this->imageService = $imageService;
+        $this->mediaService = $mediaService;
         $this->view = $view;
         $this->mediaDir = $config->get('photos.media_dir');
     }
@@ -36,10 +36,10 @@ class HomeController {
         $dir = $this->request->get('dir', '');
         $search = $this->request->get('search', '');
 
-        $this->imageService->init($dir);
-        $this->imageService->sync();
+        $this->mediaService->init($dir);
+        $this->mediaService->sync();
 
-        $images = $this->imageService->findImages();
+        $images = $this->mediaService->findImages();
         $columns = [[], [], []];
         $heights = [0, 0, 0];
         foreach ($images as $image) {

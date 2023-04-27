@@ -5,18 +5,18 @@ namespace Dynart\Press\Service;
 use Dynart\Micro\AppException;
 use Dynart\Micro\Config;
 
-class ImageService {
+class MediaService {
 
     /** @var Config */
     private $config;
 
-    /** @var ImageRepository */
+    /** @var MediaRepository */
     private $repository;
 
     private $fullDirPath;
     private $dir;
 
-    public function __construct(Config $config, ImageRepository $repository) {
+    public function __construct(Config $config, MediaRepository $repository) {
         $this->config = $config;
         $this->repository = $repository;
     }

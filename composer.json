@@ -19,7 +19,8 @@
     "minimum-stability": "dev",
     "require": {
         "php": ">=7.1.0",
-        "dynart/micro": "@stable"
+        "dynart/micro": "@dev",
+        "dynart/micro-entities": "@dev"
     },
     "repositories": {
         "dynart-micro": {
@@ -28,6 +29,13 @@
             "options": {
                 "symlink": true
             }
-        }
+        },
+        "dynart-micro-entities": {
+            "type": "path",
+            "url": "../dynart-micro-entities",
+            "options": {
+                "symlink": true
+            }
+        }        
     }
 }

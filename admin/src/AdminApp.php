@@ -13,7 +13,7 @@ use Dynart\Micro\View;
 use Dynart\Micro\WebApp;
 
 use Dynart\Press\Service\PluginRepository;
-use Dynart\Press\Service\PluginManager;
+use Dynart\Press\Service\PluginService;
 
 class AdminApp extends WebApp {
 
@@ -30,26 +30,29 @@ class AdminApp extends WebApp {
         $this->addMiddleware(AnnotationProcessor::class);
 
         $this->add(PluginRepository::class);
-        $this->addMiddleware(PluginManager::class);
+        $this->addMiddleware(PluginService::class);
 
         $this->add(Controller\DashboardController::class);
-
-        $pluginManager = $this->get(PluginManager::class);
-        $pluginManager->init();
 
         $annotations = $this->get(AnnotationProcessor::class);
         $annotations->addNamespace('Dynart\\Press\\Admin\\Controller');
         $annotations->add(RouteAnnotation::class);
-
     }
 
     public function init() {
         parent::init();
+        try {
+            $translation = $this->get(Translation::class);
+            $translation->add('admin', '~/admin/translations');
 
-        $translation = $this->get(Translation::class);
-        $translation->add('admin', '~/admin/translations');
+            $view = $this->get(View::class);
+            $view->addFolder('admin', '~/admin/views');
 
-        $view = $this->get(View::class);
-        $view->addFolder('admin', '~/admin/views');
+            $pluginManager = $this->get(PluginService::class);
+            $pluginManager->init();
+            $pluginManager->adminInit();
+        } catch (\Exception $e) {
+            $this->handleException($e);
+        }
     }
 }

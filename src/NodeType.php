@@ -3,14 +3,18 @@
 namespace Dynart\Press;
 
 use Dynart\Micro\App;
-use Dynart\Press\Service\EventManager;
+use Dynart\Micro\Entities\EntityManager;
+
 use Dynart\Press\Entity\Node;
+use Dynart\Press\Service\EventService;
+use Dynart\Press\Service\NowProvider;
+use Dynart\Press\Service\UserService;
 
 abstract class NodeType {
 
     protected $id;
 
-    /** @var EventManager */
+    /** @var EventService */
     protected $events;
 
     /** @var EntityManager */
@@ -24,7 +28,7 @@ abstract class NodeType {
 
     public function __construct() {
         $app = App::instance();
-        $this->events = $app->get(EventManager::class);
+        $this->events = $app->get(EventService::class);
         $this->em = $app->get(EntityManager::class);
         $this->users = $app->get(UserService::class);
         $this->nowProvider = $app->get(NowProvider::class);

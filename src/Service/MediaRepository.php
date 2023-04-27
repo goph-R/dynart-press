@@ -4,7 +4,7 @@ namespace Dynart\Press\Service;
 
 use Dynart\Micro\Database\Repository;
 
-class ImageRepository extends Repository {
+class MediaRepository extends Repository {
 
     protected $table = 'image';
     protected $allFields = [
