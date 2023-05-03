@@ -5,7 +5,7 @@ namespace Dynart\Press\Service;
 class NowProvider {
 
     public function now() {
-        return date('Y-m-h H:i:s'); // TODO
+        return date('Y-m-d H:i:s'); // TODO
     }
 
 }

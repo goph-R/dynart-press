@@ -15,13 +15,13 @@ class Node extends Entity {
     /** @column { "type": "string", "size": 50, "fixSize": true, "notNull": true } */
     public $type;
 
-    /** @column { "type": "int", "references": "user.id" } */
+    /** @column { "type": "int", "foreignKey": ["Dynart\\Press\\Entity\\User", "id"], "onDelete": "cascade" } */
     public $created_by;
 
-    /** @column { "type": "datetime", "default": "current_datetime" } */
+    /** @column { "type": "datetime", "default": "now" } */
     public $created_at;
 
-    /** @column { "type": "int", "references": "user.id" } */
+    /** @column { "type": "int", "foreignKey": ["Dynart\\Press\\Entity\\User", "id"], "onDelete": "cascade" } */
     public $updated_by;
 
     /** @column { "type": "datetime", "default": null } */

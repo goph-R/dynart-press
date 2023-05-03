@@ -1,7 +1,7 @@
 <?php
 
 $str = "sql query !with '!with' \"!with\" !with";
-$newStr = preg_replace('/(?<!["\'])\!with\b/', '', $str);
+$newStr = preg_replace('/(?<!["\'])\!with\b/', 'asdf', $str);
 echo $newStr;
 
 /*

@@ -13,6 +13,6 @@ class Plugin extends NodeEntity {
     /** @column { "type": "string", "size": 255, "notNull": true } */
     public $name;
 
-    /** @column { "type": "bool", "notNull": true } */
+    /** @column { "type": "bool", "notNull": true, "default": false } */
     public $active;
 }

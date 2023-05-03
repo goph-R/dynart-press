@@ -5,6 +5,9 @@ namespace Dynart\Press;
 use Dynart\Micro\Database;
 use Dynart\Micro\Database\PdoBuilder;
 use Dynart\Micro\Database\MariaDatabase;
+use Dynart\Micro\Entities\QueryBuilder;
+use Dynart\Micro\Entities\QueryBuilder\MariaQueryBuilder;
+
 use Dynart\Micro\Middleware\LocaleResolver;
 use Dynart\Micro\Middleware\AnnotationProcessor;
 use Dynart\Micro\Annotation\RouteAnnotation;
@@ -51,6 +54,7 @@ class PressApp extends WebApp {
         // services
         $this->add(NowProvider::class);
         $this->add(EntityManager::class);
+        $this->add(QueryBuilder::class, MariaQueryBuilder::class);
         $this->add(EventService::class);
         $this->add(PluginRepository::class);
         $this->add(MediaService::class);
@@ -76,9 +80,18 @@ class PressApp extends WebApp {
     public function init() {
         parent::init();
         try {
-            /** @var Translation $translation */
-            $translation = $this->get(Translation::class);
-            $translation->add('press', '~/translations');
+            /** @var Translation $tr */
+            $tr = $this->get(Translation::class);
+            $tr->add('press', '~/translations');
+
+            /** @var EntityManager $em */
+            $em = $this->get(EntityManager::class);
+            /** @var QueryBuilder $qb */
+            $qb = $this->get(QueryBuilder::class);
+            foreach ($em->tableNames() as $className => $tableName) {
+                echo $qb->createTable($className).";\n";
+            }
+
             /*
             $eventService = $this->get(EventService::class);
             $eventService->subscribe(User::EVENT_BEFORE_SAVE, function(User $user) {
