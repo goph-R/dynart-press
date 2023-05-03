@@ -41,4 +41,10 @@ class PluginService implements Middleware {
         }
     }
 
+    public function cliInit(): void {
+        foreach ($this->activePlugins as $plugin) {
+            $plugin->cliInit();
+        }
+    }
+
 }

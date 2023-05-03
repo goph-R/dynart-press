@@ -43,7 +43,7 @@ class NodeService {
         $now = $this->nowProvider->now();
         if ($entity->isNew()) {
             $node = new Node();
-            $node->type = $this->entityManager->createTableNameByClass(get_class($entity));
+            $node->type = $this->entityManager->tableNameByClass(get_class($entity), false);
             $node->created_by = $currentUserId;
             $node->created_at = $now;
             $this->saveEntity('node', $node);
