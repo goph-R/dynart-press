@@ -29,14 +29,16 @@ class PressCliApp extends CliApp {
 
         /** @var CliCommands $commands */
         $commands = $this->get(CliCommands::class);
-        $commands->add('test:arguments', [$this, 'testArguments'], ['param1', 'param2'], ['flag1', 'flag2']);
         $commands->add('db:create-init-sql', [$this, 'createInitSql']);
         $commands->add('db:create-migration-sql', [$this, 'createMigrationSql']);
         $commands->add('db:migrate', [$this, 'migrate']);
+    }
 
+    public function process() {
         /** @var PluginService $plugins */
         $plugins = $this->get(PluginService::class);
         $plugins->cliInit();
+        parent::process();
     }
 
     public function createInitSql() {
@@ -59,7 +61,4 @@ class PressCliApp extends CliApp {
     public function migrate() {
     }
 
-    public function testArguments(array $params) {
-        var_dump($params);
-    }
 }

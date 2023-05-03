@@ -30,14 +30,12 @@ class PressApp extends WebApp {
     public function init() {
         parent::init();
         $this->appHelper->init($this);
-
-        /** @var PluginService $plugins */
-        $plugins = $this->get(PluginService::class);
-        $plugins->init();
     }
 
     public function process() {
-
+        /** @var PluginService $plugins */
+        $plugins = $this->get(PluginService::class);
+        $plugins->init();
 
         /*
         $eventService = $this->get(EventService::class);

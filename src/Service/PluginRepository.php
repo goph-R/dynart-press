@@ -14,7 +14,9 @@ class PluginRepository extends Repository {
     ];
 
     public function findAllActiveNames() {
-        return $this->db->fetchColumn("select `name` from ".$this->db->escapeName($this->table)." where active = 1");
+        return $this->db->fetchColumn("select `name` from !tableName where active = 1", [
+            '!tableName' => $this->db->escapeName($this->db->configValue('table_prefix').$this->table)
+        ]);
     }
 
 }

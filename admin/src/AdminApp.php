@@ -38,7 +38,11 @@ class AdminApp extends WebApp {
         $view = $this->get(View::class);
         $view->addFolder('admin', '~/admin/views');
 
-        $pluginManager = $this->get(PluginService::class);
-        $pluginManager->adminInit();
+    }
+
+    public function process() {
+        /** @var PluginService $plugins */
+        $plugins = $this->get(PluginService::class);
+        $plugins->adminInit();
     }
 }

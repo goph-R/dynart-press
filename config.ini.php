@@ -21,7 +21,7 @@ database.default.name = "photos"
 database.default.dsn = "mysql:localhost"
 database.default.username = "root"
 database.default.password = ""
-database.default.table_prefix = "dp_"
+database.default.table_prefix = ""
 
 mailer.fake = true
 
