@@ -1,7 +1,7 @@
 <?php
 
-if (!php_sapi_name()) {
-    die("You can run this only from CLI!");
+if (http_response_code() !== false) {
+    die("Run from CLI!");
 }
 
 require_once __DIR__ . '/vendor/autoload.php';
