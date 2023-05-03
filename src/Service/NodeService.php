@@ -41,9 +41,9 @@ class NodeService {
     public function save(NodeEntity $entity) {
         $currentUserId = $this->userService->current()->id;
         $now = $this->nowProvider->now();
-        if ($entity->isNew) {
+        if ($entity->isNew()) {
             $node = new Node();
-            $node->type = $this->entityManager->tableNameByClass(get_class($entity));
+            $node->type = $this->entityManager->createTableNameByClass(get_class($entity));
             $node->created_by = $currentUserId;
             $node->created_at = $now;
             $this->saveEntity('node', $node);
