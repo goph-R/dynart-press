@@ -38,6 +38,7 @@ class PressCliApp extends CliApp {
         /** @var PluginService $plugins */
         $plugins = $this->get(PluginService::class);
         $plugins->cliInit();
+
         parent::process();
     }
 

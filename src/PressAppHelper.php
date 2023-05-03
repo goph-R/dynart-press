@@ -26,6 +26,7 @@ use Dynart\Press\Entity\Role_Permission;
 use Dynart\Press\Entity\Permission;
 use Dynart\Press\Entity\Permission_Text;
 use Dynart\Press\Entity\Plugin;
+use Dynart\Press\Entity\Setting;
 
 use Dynart\Press\Service\EventService;
 use Dynart\Press\Service\MediaRepository;
@@ -61,6 +62,7 @@ class PressAppHelper {
         $app->add(Permission::class);
         $app->add(Permission_Text::class);
         $app->add(Plugin::class);
+        $app->add(Setting::class);
 
         $app->add(Translation::class);
         $app->add(NowProvider::class);

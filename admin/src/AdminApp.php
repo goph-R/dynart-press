@@ -44,5 +44,7 @@ class AdminApp extends WebApp {
         /** @var PluginService $plugins */
         $plugins = $this->get(PluginService::class);
         $plugins->adminInit();
+
+        parent::process();
     }
 }

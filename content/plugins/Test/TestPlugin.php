@@ -15,6 +15,6 @@ class TestPlugin extends PluginAdapter {
     }
 
     public function testArguments(array $params) {
-        var_dump($params);
+        print_r($params);
     }
 }
