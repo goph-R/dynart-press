@@ -3,6 +3,7 @@
 namespace Dynart\Press;
 
 use Dynart\Micro\App;
+use Dynart\Micro\Entities\QueryExecutor;
 use Dynart\Micro\Translation;
 use Dynart\Micro\Database;
 use Dynart\Micro\Database\MariaDatabase;
@@ -16,6 +17,7 @@ use Dynart\Micro\Entities\EntityManager;
 use Dynart\Micro\Entities\QueryBuilder;
 use Dynart\Micro\Entities\QueryBuilder\MariaQueryBuilder;
 
+use Dynart\Press\Entity\Db_Migration;
 use Dynart\Press\Entity\Node;
 use Dynart\Press\Entity\User;
 use Dynart\Press\Entity\User_Role;
@@ -28,16 +30,17 @@ use Dynart\Press\Entity\Permission_Text;
 use Dynart\Press\Entity\Plugin;
 use Dynart\Press\Entity\Setting;
 
+use Dynart\Press\Service\DbMigrationService;
 use Dynart\Press\Service\EventService;
 use Dynart\Press\Service\MediaRepository;
 use Dynart\Press\Service\MediaService;
 use Dynart\Press\Service\NodeService;
-use Dynart\Press\Service\NowProvider;
+use Dynart\Press\Service\DateService;
 use Dynart\Press\Service\PluginRepository;
 use Dynart\Press\Service\PluginService;
 use Dynart\Press\Service\UserService;
 
-class PressAppHelper {
+class PressAppSetup {
 
     /** @var AnnotationProcessor */
     private $annotations;
@@ -48,10 +51,13 @@ class PressAppHelper {
         $app->add(Database::class, MariaDatabase::class);
         $app->add(EntityManager::class);
         $app->add(QueryBuilder::class, MariaQueryBuilder::class);
+        $app->add(QueryExecutor::class);
         $app->add(ColumnAnnotation::class);
+        $app->add(DbMigrationService::class);
 
         $app->add(RouteAnnotation::class);
 
+        $app->add(Db_Migration::class);
         $app->add(Node::class);
         $app->add(User::class);
         $app->add(User_Role::class);
@@ -63,9 +69,8 @@ class PressAppHelper {
         $app->add(Permission_Text::class);
         $app->add(Plugin::class);
         $app->add(Setting::class);
-
         $app->add(Translation::class);
-        $app->add(NowProvider::class);
+        $app->add(DateService::class);
         $app->add(EventService::class);
         $app->add(PluginRepository::class);
         $app->add(MediaService::class);
@@ -84,9 +89,13 @@ class PressAppHelper {
     }
 
     public function init(App $app) {
+
         /** @var Translation $translation */
         $translation = $app->get(Translation::class);
         $translation->add('press', '~/translations');
+
+        $dbMigrationService = $app->get(DbMigrationService::class);
+        $dbMigrationService->addFolder('press', '~/content/sql');
     }
 
 }

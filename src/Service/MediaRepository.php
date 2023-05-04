@@ -6,17 +6,20 @@ use Dynart\Micro\Database\Repository;
 
 class MediaRepository extends Repository {
 
-    protected $table = 'image';
-    protected $allFields = [
-        'id',
-        'width',
-        'height',
-        'created_at',
-        'updated_at',
-        'path',
-        'path_updated_at',
-        'title'
-    ];
+    protected $tableName = 'image';
+
+    public function allFields() {
+        return [
+            'id',
+            'width',
+            'height',
+            'created_at',
+            'updated_at',
+            'path',
+            'path_updated_at',
+            'title'
+        ];
+    }
 
     protected function getWhere(array $params) {
         $result = '';

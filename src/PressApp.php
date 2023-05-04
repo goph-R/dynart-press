@@ -5,21 +5,18 @@ namespace Dynart\Press;
 use Dynart\Micro\Middleware\AnnotationProcessor;
 use Dynart\Micro\WebApp;
 
-use Dynart\Micro\Entities\EntityManager;
-use Dynart\Micro\Entities\QueryBuilder;
-
 use Dynart\Press\Controller\HomeController;
 use Dynart\Press\Service\PluginService;
 
 class PressApp extends WebApp {
 
-    /** @var PressAppHelper */
-    private $appHelper;
+    /** @var PressAppSetup */
+    private $appSetup;
 
     public function __construct(array $configPaths) {
         parent::__construct($configPaths);
-        $this->appHelper = new PressAppHelper();
-        $this->appHelper->create($this);
+        $this->appSetup = new PressAppSetup();
+        $this->appSetup->create($this);
 
         $this->add(HomeController::class);
 
@@ -29,7 +26,7 @@ class PressApp extends WebApp {
 
     public function init() {
         parent::init();
-        $this->appHelper->init($this);
+        $this->appSetup->init($this);
     }
 
     public function process() {

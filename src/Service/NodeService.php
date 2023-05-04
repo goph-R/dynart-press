@@ -24,10 +24,10 @@ class NodeService {
     /** @var UserService */
     protected $userService;
 
-    /** @var NowProvider */
+    /** @var DateService */
     protected $nowProvider;
 
-    public function __construct(Database $db, EventService $eventService, EntityManager $entityManager, NowProvider $nowProvider) {
+    public function __construct(Database $db, EventService $eventService, EntityManager $entityManager, DateService $nowProvider) {
         $this->db = $db;
         $this->eventService = $eventService;
         $this->entityManager = $entityManager;

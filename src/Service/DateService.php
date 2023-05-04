@@ -2,10 +2,8 @@
 
 namespace Dynart\Press\Service;
 
-class NowProvider {
-
+class DateService {
     public function now() {
-        return date('Y-m-d H:i:s'); // TODO
+        return gmdate('Y-m-d H:i:s');
     }
-
 }
