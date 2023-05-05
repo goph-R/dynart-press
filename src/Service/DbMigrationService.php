@@ -103,11 +103,11 @@ class DbMigrationService {
         $newNames = array_diff($allNames, $migratedNames);
         sort($newNames);
         foreach ($newNames as $name) {
-            $this->mergeSqlFile($namespace, $name, $sqlFiles[$name]);
+            $this->migrateSqlFile($namespace, $name, $sqlFiles[$name]);
         }
     }
 
-    private function mergeSqlFile(string $namespace, string $name, array $sqlFile): void {
+    private function migrateSqlFile(string $namespace, string $name, array $sqlFile): void {
         $this->db->runInTransaction(function () use ($namespace, $name, $sqlFile) {
             $this->db->query($sqlFile['content']);
             $dbMigration = new Db_Migration();
