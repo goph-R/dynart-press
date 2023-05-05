@@ -51,8 +51,8 @@ class DbMigrationService {
     private function migrateFolder(string $namespace, string $dir): void {
         $sqlFiles = $this->findSqlFiles($dir);
         $dbMigrations = $this->findDbMigrations($namespace);
-        $mergedNames = $this->checkExistingMigrations($dir, $dbMigrations, $sqlFiles);
-        $this->mergeNewSqlFiles($namespace, $sqlFiles, $mergedNames);
+        $migratedNames = $this->checkExistingMigrations($dir, $dbMigrations, $sqlFiles);
+        $this->migrateNewSqlFiles($namespace, $sqlFiles, $migratedNames);
     }
 
     private function findSqlFiles(string $dir) {
@@ -84,7 +84,7 @@ class DbMigrationService {
     }
 
     private function checkExistingMigrations(string $dir, array $dbMigrations, array $sqlFiles): array {
-        $mergedNames = [];
+        $migratedNames = [];
         /** @var Db_Migration $dbMigration */
         foreach ($dbMigrations as $dbMigration) {
             if (!array_key_exists($dbMigration->name, $sqlFiles)) {
@@ -93,23 +93,22 @@ class DbMigrationService {
             if ($dbMigration->hash != $sqlFiles[$dbMigration->name]['hash']) {
                 throw new AppException("Hash does not match in '$dir/{$dbMigration->name}.sql'");
             }
-            $mergedNames[] = $dbMigration->name;
+            $migratedNames[] = $dbMigration->name;
         }
-        return $mergedNames;
+        return $migratedNames;
     }
 
-    private function mergeNewSqlFiles(string $namespace, array $sqlFiles, array $mergedNames): void {
+    private function migrateNewSqlFiles(string $namespace, array $sqlFiles, array $migratedNames): void {
         $allNames = array_keys($sqlFiles);
-        $newNames = array_diff($allNames, $mergedNames);
+        $newNames = array_diff($allNames, $migratedNames);
         sort($newNames);
         foreach ($newNames as $name) {
-            $this->mergeSqlFile($namespace, $sqlFiles, $name);
+            $this->mergeSqlFile($namespace, $name, $sqlFiles[$name]);
         }
     }
 
-    private function mergeSqlFile(string $namespace, array $sqlFiles, string $name): void {
-        $this->db->runInTransaction(function () use ($namespace, $name, $sqlFiles) {
-            $sqlFile = $sqlFiles[$name];
+    private function mergeSqlFile(string $namespace, string $name, array $sqlFile): void {
+        $this->db->runInTransaction(function () use ($namespace, $name, $sqlFile) {
             $this->db->query($sqlFile['content']);
             $dbMigration = new Db_Migration();
             $dbMigration->name = $name;
