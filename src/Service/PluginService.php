@@ -10,6 +10,8 @@ use Dynart\Press\PluginInterface;
 
 class PluginService implements Middleware {
 
+    const NAMESPACE_PREFIX = "Dynart\\Press\\Plugin";
+
     /** @var Config */
     private $config;
 
@@ -29,16 +31,9 @@ class PluginService implements Middleware {
     }
 
     public function run(): void {
-        $app = App::instance();
         $names = $this->repository->findAllActiveNames();
         foreach ($names as $name) { // TODO: dependency?
-            $class = "Dynart\\Press\\Plugin\\{$name}\\{$name}Plugin";
-            $app->add($class);
-            $this->activePlugins[] = $app->get($class);
-            $dir = $this->config->getFullPath("~/content/plugins/$name/sql");
-            if (file_exists($dir)) {
-                $this->dbMigrationService->addFolder(strtolower($name), $dir);
-            }
+            $this->add($name);
         }
     }
 
@@ -57,6 +52,20 @@ class PluginService implements Middleware {
     public function cliInit(): void {
         foreach ($this->activePlugins as $plugin) {
             $plugin->cliInit();
+        }
+    }
+
+    private function add(string $name): void {
+        $namespace = self::NAMESPACE_PREFIX . "\\$name";
+        $class = "$namespace\\{$name}Plugin";
+
+        $app = App::instance();
+        $app->add($class);
+        $this->activePlugins[] = $app->get($class);
+
+        $dir = $this->config->getFullPath("~/content/plugins/$name/sql");
+        if (file_exists($dir)) {
+            $this->dbMigrationService->addFolder($namespace, $dir);
         }
     }
 

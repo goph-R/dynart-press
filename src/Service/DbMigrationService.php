@@ -9,6 +9,7 @@ use Dynart\Micro\Entities\EntityManager;
 use Dynart\Micro\Entities\QueryExecutor;
 
 use Dynart\Press\Entity\Db_Migration;
+use Dynart\Press\StringUtil;
 
 class DbMigrationService {
 
@@ -41,18 +42,48 @@ class DbMigrationService {
         $this->folders[$namespace] = $this->config->getFullPath($path);
     }
 
-    public function migrate(): void {
+    public function migrate(): array {
         $this->queryExecutor->createTable(Db_Migration::class, true);
+        $result = [];
         foreach ($this->folders as $namespace => $dir) {
-            $this->migrateFolder($namespace, $dir);
+            $result = array_merge($result, $this->migrateFolder($namespace, $dir));
         }
+        return $result;
     }
 
-    private function migrateFolder(string $namespace, string $dir): void {
+    public function namespaces() {
+        return array_keys($this->folders);
+    }
+
+    public function folderPath(string $namespace) {
+        if (!array_key_exists($namespace, $this->folders)) {
+            throw new AppException("Namespace doesn't exist: ".$namespace);
+        }
+        return $this->folders[$namespace];
+    }
+
+    public function generateSql(string $namespace): string {
+        return "select 1;\n";
+    }
+
+    public function newSqlPath(string $namespace, string $message): string {
+        $folderPath = $this->folderPath($namespace);
+        $date = gmdate('Y-m-d');
+        $number = 0;
+        do {
+            $number++;
+            $path = sprintf("$folderPath/{$date}_%03d", $number);
+        }
+        while (!empty(glob($path.'*.sql')));
+        return $path.'_'.StringUtil::safeFilename($message).'.sql';
+
+    }
+
+    private function migrateFolder(string $namespace, string $dir): array {
         $sqlFiles = $this->findSqlFiles($dir);
         $dbMigrations = $this->findDbMigrations($namespace);
         $migratedNames = $this->checkExistingMigrations($dir, $dbMigrations, $sqlFiles);
-        $this->migrateNewSqlFiles($namespace, $sqlFiles, $migratedNames);
+        return $this->migrateNewSqlFiles($namespace, $sqlFiles, $migratedNames);
     }
 
     private function findSqlFiles(string $dir) {
@@ -98,13 +129,19 @@ class DbMigrationService {
         return $migratedNames;
     }
 
-    private function migrateNewSqlFiles(string $namespace, array $sqlFiles, array $migratedNames): void {
+    private function migrateNewSqlFiles(string $namespace, array $sqlFiles, array $migratedNames): array {
         $allNames = array_keys($sqlFiles);
         $newNames = array_diff($allNames, $migratedNames);
+        $result = [];
+        if (empty($newNames)) {
+            return $result;
+        }
         sort($newNames);
         foreach ($newNames as $name) {
             $this->migrateSqlFile($namespace, $name, $sqlFiles[$name]);
+            $result[] = $sqlFiles[$name]['path'];
         }
+        return $result;
     }
 
     private function migrateSqlFile(string $namespace, string $name, array $sqlFile): void {
@@ -118,5 +155,4 @@ class DbMigrationService {
             $this->entityManager->save($dbMigration);
         });
     }
-
 }

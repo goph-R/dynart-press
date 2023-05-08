@@ -45,6 +45,8 @@ class PressAppSetup {
     /** @var AnnotationProcessor */
     private $annotations;
 
+    const NAMESPACE = "Dynart\\Press\\Entity";
+
     public function create(App $app) {
 
         $app->add(PdoBuilder::class);
@@ -85,7 +87,7 @@ class PressAppSetup {
         $this->annotations = $app->get(AnnotationProcessor::class);
         $this->annotations->add(RouteAnnotation::class);
         $this->annotations->add(ColumnAnnotation::class);
-        $this->annotations->addNamespace('Dynart\\Press\\Entity');
+        $this->annotations->addNamespace(self::NAMESPACE);
     }
 
     public function init(App $app) {
@@ -95,7 +97,7 @@ class PressAppSetup {
         $translation->add('press', '~/translations');
 
         $dbMigrationService = $app->get(DbMigrationService::class);
-        $dbMigrationService->addFolder('press', '~/content/sql');
+        $dbMigrationService->addFolder(self::NAMESPACE, '~/content/sql');
     }
 
 }

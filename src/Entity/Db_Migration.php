@@ -15,6 +15,6 @@ class Db_Migration extends Entity {
     /** @column { "type": "string", "size": 32, "fixSize": true, "notNull": true } */
     public $hash;
 
-    /** @column { "type": "datetime", "default": "now" } */
+    /** @column { "type": "datetime", "default": "now" , "notNull": true } */
     public $created_at;
 }
