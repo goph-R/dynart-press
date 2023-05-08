@@ -85,7 +85,9 @@ class PressCliApp extends CliApp {
             $this->output->setColor(CliOutput::COLOR_OFF);
             if ($create) {
                 $path = $this->dbMigrationService->newSqlPath($n, $message);
-                file_put_contents($path, $sql);
+                if (file_put_contents($path, $sql) === false) {
+                    throw new AppException("Couldn't create file: ".$path);
+                }
                 $this->output->writeLine("Created: $path");
             } else {
                 $this->output->writeLine($sql);
