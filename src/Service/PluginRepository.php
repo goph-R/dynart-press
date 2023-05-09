@@ -5,18 +5,23 @@ namespace Dynart\Press\Service;
 use Dynart\Micro\Database;
 use Dynart\Micro\Database\Repository;
 use Dynart\Micro\Entities\EntityManager;
+use Dynart\Micro\Entities\QueryExecutor;
 use Dynart\Press\Entity\Plugin;
 
 class PluginRepository extends Repository {
 
-    protected $entityClassName = Plugin::class;
+    private $entityClassName = Plugin::class;
 
     /** @var EntityManager */
-    protected $entityManager;
+    private $entityManager;
 
-    public function __construct(Database $db, EntityManager $entityManager) {
+    /** @var QueryExecutor */
+    private $queryExecutor;
+
+    public function __construct(Database $db, EntityManager $entityManager, QueryExecutor $queryExecutor) {
         parent::__construct($db);
         $this->entityManager = $entityManager;
+        $this->queryExecutor = $queryExecutor;
     }
 
     public function allFields() {
@@ -28,7 +33,10 @@ class PluginRepository extends Repository {
     }
 
     public function findAllActiveNames() {
-        return $this->db->fetchColumn("select {$this->db->escapeName('name')} from {$this->safeTableName()} where active = 1");
+        if ($this->queryExecutor->isTableExists($this->entityClassName)) {
+            return $this->db->fetchColumn("select {$this->db->escapeName('name')} from {$this->safeTableName()} where active = 1");
+        }
+        return [];
     }
 
 }

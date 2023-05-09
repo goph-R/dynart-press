@@ -6,55 +6,46 @@ use Dynart\Micro\AppException;
 use Dynart\Micro\CliApp;
 use Dynart\Micro\CliCommands;
 use Dynart\Micro\CliOutput;
-use Dynart\Micro\Middleware\AnnotationProcessor;
+use Dynart\Micro\Config;
 use Dynart\Micro\Request;
 use Dynart\Micro\Router;
+use Dynart\Micro\View;
 
 use Dynart\Press\Service\DbMigrationService;
+use Dynart\Press\Service\DbMigrationSqlGenerator;
 use Dynart\Press\Service\PluginService;
 
-use Dynart\Press\Admin\Controller\DashboardController;
-use Dynart\Press\Controller\HomeController;
-
 class PressCliApp extends CliApp {
-
-    /** @var PressAppSetup */
-    private $appHelper;
 
     /** @var DbMigrationService */
     private $dbMigrationService;
 
     public function __construct(array $configPaths) {
         parent::__construct($configPaths);
-        $this->appHelper = new PressAppSetup();
         $this->add(Router::class);
         $this->add(Request::class);
-        $this->appHelper->create($this);
+        $this->add(View::class);
+        $this->add(DbMigrationSqlGenerator::class);
+        PressAppSetup::create($this, $this->isAdmin());
     }
 
     public function init() {
         parent::init();
-        $this->appHelper->init($this);
-
-        // TODO: add the controllers and namespaces for app:routes (how to do this properly?)
-        $this->add(DashboardController::class);
-        $this->add(HomeController::class);
-        $annotations = $this->get(AnnotationProcessor::class);
-        $annotations->addNamespace('Dynart\\Press\\Admin\\Controller');
-        $annotations->addNamespace('Dynart\\Press\\Controller');
-        //
+        PressAppSetup::init($this, $this->isAdmin());
 
         /** @var CliCommands $commands */
         $commands = $this->get(CliCommands::class);
         $commands->add('db:migration-sql', [$this, 'dbMigrationSql'], ['namespace'], ['create']);
         $commands->add('db:migrate', [$this, 'dbMigrate']);
         $commands->add('app:routes', [$this, 'appRoutes']);
+        $commands->add('app:config', [$this, 'appConfig'], [], ['array']);
 
         $this->output = $this->get(CliOutput::class);
         $this->dbMigrationService = $this->get(DbMigrationService::class);
     }
 
     public function process() {
+        PressAppSetup::initPlugins($this, $this->isAdmin());
         /** @var PluginService $plugins */
         $plugins = $this->get(PluginService::class);
         $plugins->cliInit();
@@ -66,6 +57,7 @@ class PressCliApp extends CliApp {
     }
 
     public function dbMigrationSql(array $params) {
+        $dbMigrationSqlGenerator = $this->get(DbMigrationSqlGenerator::class);
         $namespace = $this->paramValue($params, 'namespace');
         $message = $this->paramValue($params, 0);
         $create = $params['create'];
@@ -75,7 +67,8 @@ class PressCliApp extends CliApp {
             throw new AppException("Provide a message for the migration!");
         }
         foreach ($namespaces as $n) {
-            $sql = $this->dbMigrationService->generateSql($namespace);
+            /** @var DbMigrationSqlGenerator $sql */
+            $sql = $dbMigrationSqlGenerator->generate($n);
             if (!$sql) {
                 continue;
             }
@@ -86,7 +79,7 @@ class PressCliApp extends CliApp {
             if ($create) {
                 $path = $this->dbMigrationService->newSqlPath($n, $message);
                 if (file_put_contents($path, $sql) === false) {
-                    throw new AppException("Couldn't create file: ".$path);
+                    throw new AppException("Couldn't create: ".$path);
                 }
                 $this->output->writeLine("Created: $path");
             } else {
@@ -125,6 +118,26 @@ class PressCliApp extends CliApp {
                 $this->output->writeLine("$routeData[0]::$routeData[1]\n");
             }
         }
+    }
+
+    public function appConfig(array $params) {
+        $name = $this->paramValue($params, 0);
+        if (!$name) {
+            throw new AppException("Please provide a config name!");
+        }
+        $config = $this->get(Config::class);
+        $array = $params['array'];
+        if ($array) {
+            foreach ($config->getArray($name, []) as $n => $v) {
+                $this->output->writeLine("$n: $v");
+            }
+        } else {
+            $this->output->writeLine("$name: ".$config->get($name));
+        }
+    }
+
+    private function isAdmin() {
+        return in_array('-admin', $_SERVER['argv']);
     }
 
     private function paramValue(array $params, $nameOrIndex, $default = null) {

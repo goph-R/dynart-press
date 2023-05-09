@@ -30,11 +30,17 @@ class DbMigrationService {
 
     private $folders = [];
 
-    public function __construct(Config $config, Database $db, EntityManager $em, QueryExecutor $qe, DateService $dateService) {
+    public function __construct(
+        Config $config,
+        Database $db,
+        EntityManager $entityManager,
+        QueryExecutor $queryExecutor,
+        DateService $dateService
+    ) {
         $this->config = $config;
         $this->db = $db;
-        $this->entityManager = $em;
-        $this->queryExecutor = $qe;
+        $this->entityManager = $entityManager;
+        $this->queryExecutor = $queryExecutor;
         $this->dateService = $dateService;
     }
 
@@ -60,10 +66,6 @@ class DbMigrationService {
             throw new AppException("Namespace doesn't exist: ".$namespace);
         }
         return $this->folders[$namespace];
-    }
-
-    public function generateSql(string $namespace): string {
-        return "select 1;\n";
     }
 
     public function newSqlPath(string $namespace, string $message): string {

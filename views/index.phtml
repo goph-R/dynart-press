@@ -1,5 +1,5 @@
 <?php $this->useLayout('layout') ?>
-<?php $this->startBlock('content') ?>
+<?php $this->startBlock('content'); ?>
 <div class="posts">
     <div class="row">
         <?php foreach ($imageColumns as $images): ?>
@@ -12,9 +12,8 @@
                                     <img src="<?= getthumb_url($mediaDir.'/'.$dir.'/'.$image['path']) ?>">
                                 </a>
                             </div>
-
                             <h1 class="post-title" style="display: <?= $image['title'] ? 'block' : 'none' ?>">
-                                <?= $image['title'] ?>
+                                <?= esc_html($image['title']) ?>
                             </h1>
                             <button class="button post-edit-button">
                                 <i class="fa-solid fa-file-pen"></i>
