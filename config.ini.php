@@ -23,7 +23,7 @@ database.default.username = "root"
 database.default.password = ""
 
 ; Only can be set once at the beginning!
-database.default.table_prefix = ""
+database.default.table_prefix = "dp_"
 
 mailer.fake = true
 

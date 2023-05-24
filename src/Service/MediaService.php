@@ -106,7 +106,7 @@ class MediaService {
     public function findImages() {
         return $this->repository->findAll(null, [
             'dir' => $this->dir,
-            'order_by' => 'id',
+            'order_by' => 'created_at',
             'order_dir' => 'desc',
             'with_tags' => true
         ]);

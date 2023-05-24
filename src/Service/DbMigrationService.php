@@ -148,13 +148,15 @@ class DbMigrationService {
 
     private function migrateSqlFile(string $namespace, string $name, array $sqlFile): void {
         $this->db->runInTransaction(function () use ($namespace, $name, $sqlFile) {
-            $this->db->query($sqlFile['content']);
+            $this->db->query(
+                $sqlFile['content'],
+                ['!tablePrefix_' => $this->db->configValue('table_prefix')]
+            );
             $dbMigration = new Db_Migration();
             $dbMigration->name = $name;
             $dbMigration->namespace = $namespace;
             $dbMigration->hash = $sqlFile['hash'];
             $dbMigration->created_at = $this->dateService->now();
-            $this->entityManager->save($dbMigration);
         });
     }
 }

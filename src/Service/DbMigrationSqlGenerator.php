@@ -32,6 +32,9 @@ class DbMigrationSqlGenerator {
     private $dateService;
 
     private $createdClassNames = [];
+    private $tablePrefix;
+
+    const PLACEHOLDER_TABLE_PREFIX = '!tablePrefix_';
 
     public function __construct(
         Config $config,
@@ -47,6 +50,7 @@ class DbMigrationSqlGenerator {
         $this->queryBuilder = $queryBuilder;
         $this->queryExecutor = $queryExecutor;
         $this->dateService = $dateService;
+        $this->tablePrefix = $this->db->configValue('table_prefix');
     }
 
     public function generate(string $namespace): string {
@@ -55,10 +59,17 @@ class DbMigrationSqlGenerator {
         $classNames = $this->findClassNames($namespace);
         $dbTableNames = $this->queryExecutor->listTables();
 
-        // create tables
+        $result = $this->generateCreateTables($classNames, $dbTableNames, $result);
+        $result .= $this->generateAlterTables($classNames);
+
+        return $result;
+    }
+
+    private function generateCreateTables($classNames, $dbTableNames, $result): string {
+        $this->entityManager->setTableNamePrefix(self::PLACEHOLDER_TABLE_PREFIX);
         $newClassNames = [];
         foreach ($classNames as $className) {
-            $classTableName = $this->entityManager->tableNameByClass($className);
+            $classTableName = $this->tablePrefix.$this->entityManager->tableNameByClass($className, false);
             if (is_subclass_of($className, Entity::class)
                 && !in_array($classTableName, $dbTableNames)) {
                 $newClassNames[] = $className;
@@ -68,7 +79,6 @@ class DbMigrationSqlGenerator {
         foreach ($newClassNames as $className) {
             $result .= $this->generateCreateTable($newClassNames, $className);
         }
-
         return $result;
     }
 
@@ -105,5 +115,16 @@ class DbMigrationSqlGenerator {
             }
         }
         return $result;
+    }
+
+    private function generateAlterTables($classNames): string {
+        foreach ($classNames as $className) {
+            $columns = $this->entityManager->tableColumns($className);
+            $this->entityManager->setTableNamePrefix($this->tablePrefix);
+            $dbColumns = $this->queryExecutor->findColumns($className);
+            $this->entityManager->setTableNamePrefix(self::PLACEHOLDER_TABLE_PREFIX);
+            
+        }
+        return '';
     }
 }
