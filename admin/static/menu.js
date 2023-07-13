@@ -14,29 +14,36 @@ const Menu = function($menu, router) {
 
     this.init = function() {
         $menu.empty();
-        console.log(items);
         items.forEach(function (item) {
-            menu.createItem(item);
+            menu.createItem($menu, item);
         });
     };
 
-    this.createItem = function(item) {
+    this.createItem = function($parent, item) {
         const $item = $('<li>');
         const $link = $('<a>');
         const $icon = $('<i>');
         const $text = $('<span>');
-        const $subMenuList = $('<ul>');
+
         $item.addClass('admin-menu-item');
         $item.attr('id', 'admin_menu_' + item.id);
-        if (item.children) {
-            //adminApp.createMenu($subMenuList, menuItem.children, 'admin-sub-nav');
-        }
         $text.text(item.label);
         if (item.icon) {
             $icon.addClass(item.icon);
             $link.append($icon);
         }
+        $link.append($text);
+        $item.append($link);
+        $parent.append($item);
+
         if (item.children) {
+            const $subMenuList = $('<ul>');
+            if (item.children) {
+                item.children.forEach(function (itemChild) {
+                    menu.createItem($subMenuList, itemChild);
+                });
+            }
+            $item.append($subMenuList);
             $link.click(function () {
                 menu.open(item.id);
             });
@@ -45,12 +52,7 @@ const Menu = function($menu, router) {
                 router.call(item.route);
             });
         }
-        $link.append($text);
-        $item.append($link);
-        if (item.children) {
-            $menu.append($subMenuList);
-        }
-        $menu.append($item);
+
     }
 
 };

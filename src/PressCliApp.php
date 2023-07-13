@@ -41,6 +41,7 @@ class PressCliApp extends CliApp {
         $commands->add('app:config', [$this, 'appConfig'], [], ['array']);
 
         $this->output = $this->get(CliOutput::class);
+        $this->output->setUseColor($this->useColor());
         $this->dbMigrationService = $this->get(DbMigrationService::class);
     }
 
@@ -138,6 +139,10 @@ class PressCliApp extends CliApp {
 
     private function isAdmin() {
         return in_array('-admin', $_SERVER['argv']);
+    }
+
+    private function useColor() {
+        return !in_array('-no-color', $_SERVER['argv']);
     }
 
     private function paramValue(array $params, $nameOrIndex, $default = null) {

@@ -3,19 +3,19 @@
 namespace Dynart\Press;
 
 use Dynart\Micro\App;
-use Dynart\Micro\Entities\QueryExecutor;
 use Dynart\Micro\Translation;
-use Dynart\Micro\Database;
-use Dynart\Micro\Database\MariaDatabase;
-use Dynart\Micro\Database\PdoBuilder;
 use Dynart\Micro\Middleware\AnnotationProcessor;
 use Dynart\Micro\Middleware\LocaleResolver;
 use Dynart\Micro\Annotation\RouteAnnotation;
 
+use Dynart\Micro\Entities\Database;
+use Dynart\Micro\Entities\Database\MariaDatabase;
+use Dynart\Micro\Entities\Database\PdoBuilder;
 use Dynart\Micro\Entities\ColumnAnnotation;
 use Dynart\Micro\Entities\EntityManager;
 use Dynart\Micro\Entities\QueryBuilder;
 use Dynart\Micro\Entities\QueryBuilder\MariaQueryBuilder;
+use Dynart\Micro\Entities\QueryExecutor;
 
 use Dynart\Micro\View;
 use Dynart\Press\Admin\Controller\DashboardController;
@@ -34,7 +34,6 @@ use Dynart\Press\Entity\Plugin;
 use Dynart\Press\Entity\Setting;
 
 use Dynart\Press\Service\DbMigrationService;
-use Dynart\Press\Service\DbMigrationSqlGenerator;
 use Dynart\Press\Service\EventService;
 use Dynart\Press\Service\MediaRepository;
 use Dynart\Press\Service\MediaService;
@@ -118,11 +117,11 @@ class PressAppSetup {
     }
 
     public static function initPlugins(App $app, bool $isAdmin) {
-        $plugins = $app->get(PluginService::class);
+        $pluginService = $app->get(PluginService::class);
         if ($isAdmin) {
-            $plugins->adminInit();
+            $pluginService->adminInit();
         } else {
-            $plugins->init();
+            $pluginService->init();
         }
 
         /*

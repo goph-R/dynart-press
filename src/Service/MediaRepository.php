@@ -2,7 +2,7 @@
 
 namespace Dynart\Press\Service;
 
-use Dynart\Micro\Database\Repository;
+use Dynart\Micro\Entities\Repository;
 
 class MediaRepository extends Repository {
 

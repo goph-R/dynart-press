@@ -24,6 +24,12 @@ class PluginService implements Middleware {
     /** @var PluginInterface[] */
     private $activePlugins = [];
 
+    /** @var string[] */
+    private $scripts = [];
+
+    /** @var string[] */
+    private $adminScripts = [];
+
     public function __construct(Config $config, PluginRepository $repository, DbMigrationService $dbMigrationService) {
         $this->config = $config;
         $this->repository = $repository;
@@ -40,6 +46,8 @@ class PluginService implements Middleware {
     public function init(): void {
         foreach ($this->activePlugins as $plugin) {
             $plugin->init();
+            $this->scripts = array_merge($this->scripts, $plugin->scripts());
+            $this->adminScripts = array_merge($this->adminScripts, $plugin->adminScripts());
         }
     }
 
@@ -68,5 +76,4 @@ class PluginService implements Middleware {
             $this->dbMigrationService->addFolder($namespace, $dir);
         }
     }
-
 }

@@ -2,10 +2,11 @@
 
 namespace Dynart\Press\Service;
 
-use Dynart\Micro\Database;
-use Dynart\Micro\Database\Repository;
+use Dynart\Micro\Entities\Database;
+use Dynart\Micro\Entities\Repository;
 use Dynart\Micro\Entities\EntityManager;
 use Dynart\Micro\Entities\QueryExecutor;
+
 use Dynart\Press\Entity\Plugin;
 
 class PluginRepository extends Repository {

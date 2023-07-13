@@ -1,7 +1,5 @@
 <?php $this->useLayout('admin:layout') ?>
-<?php $this->addScript('/admin/static/admin-app.js', ['type' => 'module', 'defer' => null]) ?>
 <?php $this->startBlock('content') ?>
-
 
 <aside class="admin-nav-bar"><ul class="admin-nav"></ul></aside>
 <div class="admin-inner-content">
@@ -165,6 +163,7 @@
 </div>
 
 <?php $this->endBlock('content') ?>
+<?php $this->addScript('/admin/static/jquery.admin-app.js', ['type' => 'module', 'defer' => null]) ?>
 <?php $this->startBlock('scripts') ?>
 <script>
 
@@ -172,37 +171,53 @@ $(document).ready(function() {
 
   const adminApp = $('main').adminApp();
 
+  const pages = {
+    'dashboard': new Page(adminApp),
+    'posts': new Page(adminApp),
+    'media': new Page(adminApp),
+    'categories': new Page(adminApp),
+    'tags': new Page(adminApp),
+    'menus': new Page(adminApp),
+    'users': new Page(adminApp),
+    'groups': new Page(adminApp),
+    'permissions': new Page(adminApp),
+    'settings': new Page(adminApp)
+  };
+
+  const routes = {
+      '/': function () { adminApp.showPage('dashboard') },
+      '/posts': function () { adminApp.showPage('posts') },
+      '/media': function () { adminApp.showPage('media') },
+      '/categories': function () { adminApp.showPage('categories') },
+      '/tags': function () { adminApp.showPage('tags') },
+      '/menus': function () { adminApp.showPage('menus') },
+      '/users': function () { adminApp.showPage('users') },
+      '/groups': function () { adminApp.showPage('groups') },
+      '/permissions': function () { adminApp.showPage('permissions') },
+      '/settings': function () { adminApp.showPage('settings') },
+  };
+
+  const menuItems = [
+      {id: 'dashboard', label: 'Dashboard', icon: 'fa-solid fa-house', route: '/'}, // TODO: label i18n
+      {id: 'posts', label: 'Posts', icon: 'fas fa-file', route: '/posts'},
+      {id: 'media', label: 'Media', icon: 'fa-solid fa-photo-film', route: '/media'},
+      {id: 'categories', label: 'Categories', icon: 'fa-solid fa-sitemap', route: '/categories'},
+      {id: 'tags', label: 'Tags', icon: 'fa-solid fa-hashtag', route: '/tags'},
+      {id: 'menus', label: 'Menus', icon: 'fa-solid fa-bars', route: '/menus'},
+      {id: 'users', label: 'Users', icon: 'fa-solid fa-users', children: [
+          {id: 'user_list', label: 'List', route: '/users'},
+          {id: 'user_groups', label: 'Groups', route: '/groups'},
+          {id: 'user_permissions', label: 'Permissions', route: '/permissions'}
+      ]},
+      {id: 'settings', label: 'Settings', icon: 'fa-solid fa-gear', route: '/settings'}
+  ];
+
   // TODO: plugins should init here
 
   adminApp.init({
-
-      routes: {
-          '/': function () { adminApp.showPage('dashboard') },
-          '/menus': function () { adminApp.showPage('menus') },
-          '/posts': function () { adminApp.showPage('posts') },
-          '/media': function () { adminApp.showPage('media') },
-          '/categories': function () { adminApp.showPage('categories') },
-          '/tags': function () { adminApp.showPage('tags') },
-          '/users': function () { adminApp.showPage('users') },
-          '/groups': function () { adminApp.showPage('groups') },
-          '/permissions': function () { adminApp.showPage('permissions') },
-          '/settings': function () { adminApp.showPage('settings') },
-      },
-
-      menuItems: [
-          {id: 'dashboard', label: 'Dashboard', icon: 'fa-solid fa-house', route: '/'}, // TODO: label i18n
-          {id: 'menus', label: 'Menus', icon: 'fa-solid fa-bars', route: '/menus'},
-          {id: 'posts', label: 'Posts', icon: 'fas fa-file', route: '/posts'},
-          {id: 'media', label: 'Media', icon: 'fa-solid fa-photo-film', route: '/media'},
-          {id: 'categories', label: 'Categories', icon: 'fa-solid fa-sitemap', route: '/categories'},
-          {id: 'tags', label: 'Tags', icon: 'fa-solid fa-hashtag', route: '/tags'},
-          {id: 'users', label: 'Users', icon: 'fa-solid fa-users', children: [
-              {id: 'user_list', label: 'List', route: '/users'},
-              {id: 'user_groups', label: 'Groups', route: '/groups'},
-              {id: 'user_permissions', label: 'Permissions', route: '/permissions'}
-          ]},
-          {id: 'settings', label: 'Settings', icon: 'fa-solid fa-gear', route: '/settings'}
-      ]
+      pages: pages,
+      routes: routes,
+      menuItems: menuItems
   });
 
 });

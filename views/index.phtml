@@ -3,7 +3,7 @@
 <div class="posts">
     <div class="row">
         <?php foreach ($imageColumns as $images): ?>
-            <div class="col col-33 col-sm-100">
+            <div class="col col-sm-100" style="width: <?= (int)(100 / $columnCount) ?>%">
                 <?php foreach ($images as $image): ?>
                     <div class="post-container">
                         <div class="post">

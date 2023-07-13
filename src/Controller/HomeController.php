@@ -40,8 +40,13 @@ class HomeController {
         $this->mediaService->sync();
 
         $images = $this->mediaService->findImages();
-        $columns = [[], [], []];
-        $heights = [0, 0, 0];
+        $columnCount = 6;
+        $columns = [];
+        $heights = [];
+        for ($i = 0; $i < $columnCount; $i++) {
+            $columns[] = [];
+            $heights[] = 0;
+        }
         foreach ($images as $image) {
 
             // search for the smallest height column
@@ -63,7 +68,8 @@ class HomeController {
             'imageColumns' => $columns,
             'dir' => $dir,
             'search' => $search,
-            'mediaDir' => $this->mediaDir
+            'mediaDir' => $this->mediaDir,
+            'columnCount' => $columnCount
         ]);
     }
 
