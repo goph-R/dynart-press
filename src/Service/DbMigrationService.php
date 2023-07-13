@@ -84,7 +84,7 @@ class DbMigrationService {
     private function migrateFolder(string $namespace, string $dir): array {
         $sqlFiles = $this->findSqlFiles($dir);
         $dbMigrations = $this->findDbMigrations($namespace);
-        $migratedNames = $this->checkExistingMigrations($dir, $dbMigrations, $sqlFiles);
+        $migratedNames = $this->verifyExistingMigrations($dir, $dbMigrations, $sqlFiles);
         return $this->migrateNewSqlFiles($namespace, $sqlFiles, $migratedNames);
     }
 
@@ -116,7 +116,7 @@ class DbMigrationService {
         );
     }
 
-    private function checkExistingMigrations(string $dir, array $dbMigrations, array $sqlFiles): array {
+    private function verifyExistingMigrations(string $dir, array $dbMigrations, array $sqlFiles): array {
         $migratedNames = [];
         /** @var Db_Migration $dbMigration */
         foreach ($dbMigrations as $dbMigration) {

@@ -5,7 +5,7 @@ namespace Dynart\Press\Service;
 use Dynart\Micro\App;
 use Dynart\Micro\AppException;
 use Dynart\Micro\Config;
-use Dynart\Micro\Database;
+use Dynart\Micro\Entities\Database;
 use Dynart\Micro\Entities\Entity;
 use Dynart\Micro\Entities\EntityManager;
 use Dynart\Micro\Entities\QueryBuilder;
