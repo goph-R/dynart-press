@@ -8,16 +8,16 @@ class PressApp extends WebApp {
 
     public function __construct(array $configPaths) {
         parent::__construct($configPaths);
-        PressAppSetup::create($this, false);
+        PressAppHelper::create($this, false);
     }
 
     public function init() {
         parent::init();
-        PressAppSetup::init($this, false);
+        PressAppHelper::init(false);
     }
 
     public function process() {
-        PressAppSetup::initPlugins($this, false);
+        PressAppHelper::initPlugins(false);
         parent::process();
     }
 }

@@ -6,7 +6,7 @@ class EventService {
 
     protected $subscriptions = [];
 
-    public function tempSubscribe(string $event, &$callable): void {
+    public function permaSubscribe(string $event, &$callable): void {
         if (!array_key_exists($event, $this->subscriptions)) {
             $this->subscriptions[$event] = [];
         }
@@ -14,7 +14,7 @@ class EventService {
     }
 
     public function subscribe(string $event, $callable): void {
-        $this->tempSubscribe($event, $callable);
+        $this->permaSubscribe($event, $callable);
     }
 
     public function unsubscribe(string $event, &$callable): bool {

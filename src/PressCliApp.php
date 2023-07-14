@@ -2,11 +2,12 @@
 
 namespace Dynart\Press;
 
-use Dynart\Micro\AppException;
 use Dynart\Micro\CliApp;
 use Dynart\Micro\CliCommands;
 use Dynart\Micro\CliOutput;
 use Dynart\Micro\Config;
+use Dynart\Micro\Micro;
+use Dynart\Micro\MicroException;
 use Dynart\Micro\Request;
 use Dynart\Micro\Router;
 use Dynart\Micro\View;
@@ -22,33 +23,33 @@ class PressCliApp extends CliApp {
 
     public function __construct(array $configPaths) {
         parent::__construct($configPaths);
-        $this->add(Router::class);
-        $this->add(Request::class);
-        $this->add(View::class);
-        $this->add(DbMigrationSqlGenerator::class);
-        PressAppSetup::create($this, $this->isAdmin());
+        Micro::add(Router::class);
+        Micro::add(Request::class);
+        Micro::add(View::class);
+        Micro::add(DbMigrationSqlGenerator::class);
+        PressAppHelper::create($this, $this->isAdmin());
     }
 
     public function init() {
         parent::init();
-        PressAppSetup::init($this, $this->isAdmin());
+        PressAppHelper::init($this->isAdmin());
 
         /** @var CliCommands $commands */
-        $commands = $this->get(CliCommands::class);
+        $commands = Micro::get(CliCommands::class);
         $commands->add('db:migration-sql', [$this, 'dbMigrationSql'], ['namespace'], ['create']);
         $commands->add('db:migrate', [$this, 'dbMigrate']);
         $commands->add('app:routes', [$this, 'appRoutes']);
         $commands->add('app:config', [$this, 'appConfig'], [], ['array']);
 
-        $this->output = $this->get(CliOutput::class);
+        $this->output = Micro::get(CliOutput::class);
         $this->output->setUseColor($this->useColor());
-        $this->dbMigrationService = $this->get(DbMigrationService::class);
+        $this->dbMigrationService = Micro::get(DbMigrationService::class);
     }
 
     public function process() {
-        PressAppSetup::initPlugins($this, $this->isAdmin());
+        PressAppHelper::initPlugins($this->isAdmin());
         /** @var PluginService $plugins */
-        $plugins = $this->get(PluginService::class);
+        $plugins = Micro::get(PluginService::class);
         $plugins->cliInit();
         try {
             parent::process();
@@ -58,14 +59,14 @@ class PressCliApp extends CliApp {
     }
 
     public function dbMigrationSql(array $params) {
-        $dbMigrationSqlGenerator = $this->get(DbMigrationSqlGenerator::class);
+        $dbMigrationSqlGenerator = Micro::get(DbMigrationSqlGenerator::class);
         $namespace = $this->paramValue($params, 'namespace');
         $message = $this->paramValue($params, 0);
         $create = $params['create'];
         $namespaces = $namespace ? [$namespace] : $this->dbMigrationService->namespaces();
         $newMigration = false;
         if (!$message) {
-            throw new AppException("Provide a message for the migration!");
+            throw new MicroException("Provide a message for the migration!");
         }
         foreach ($namespaces as $n) {
             /** @var DbMigrationSqlGenerator $sql */
@@ -80,7 +81,7 @@ class PressCliApp extends CliApp {
             if ($create) {
                 $path = $this->dbMigrationService->newSqlPath($n, $message);
                 if (file_put_contents($path, $sql) === false) {
-                    throw new AppException("Couldn't create: ".$path);
+                    throw new MicroException("Couldn't create: ".$path);
                 }
                 $this->output->writeLine("Created: $path");
             } else {
@@ -110,7 +111,7 @@ class PressCliApp extends CliApp {
 
     public function appRoutes() {
         /** @var Router $router */
-        $router = $this->get(Router::class);
+        $router = Micro::get(Router::class);
         foreach ($router->routes() as $method => $methodRoutes) {
             foreach ($methodRoutes as $route => $routeData) {
                 $this->output->setColor(CliOutput::WHITE);
@@ -124,9 +125,9 @@ class PressCliApp extends CliApp {
     public function appConfig(array $params) {
         $name = $this->paramValue($params, 0);
         if (!$name) {
-            throw new AppException("Please provide a config name!");
+            throw new MicroException("Please provide a config name!");
         }
-        $config = $this->get(Config::class);
+        $config = Micro::get(Config::class);
         $array = $params['array'];
         if ($array) {
             foreach ($config->getArray($name, []) as $n => $v) {

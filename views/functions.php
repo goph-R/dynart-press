@@ -1,14 +1,14 @@
 <?php
 
-use Dynart\Micro\App;
+use Dynart\Micro\Micro;
 use Dynart\Micro\Config;
 use Dynart\Micro\Request;
 
 function site_url(string $uri, bool $withMTime = true) {
-    return url('/content/sites/'.App::instance()->get(Request::class)->get('dir').$uri, $withMTime);
+    return url('/content/sites/'.Micro::get(Request::class)->get('dir').$uri, $withMTime);
 }
 
 function getthumb_url($uri) {
-    return base_url().App::instance()->get(Config::class)->get('photos.getthumb_prefix').$uri;
+    return base_url().Micro::get(Config::class)->get('photos.getthumb_prefix').$uri;
 }
 

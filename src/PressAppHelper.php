@@ -3,6 +3,7 @@
 namespace Dynart\Press;
 
 use Dynart\Micro\App;
+use Dynart\Micro\Micro;
 use Dynart\Micro\Translation;
 use Dynart\Micro\Middleware\AnnotationProcessor;
 use Dynart\Micro\Middleware\LocaleResolver;
@@ -43,7 +44,7 @@ use Dynart\Press\Service\PluginRepository;
 use Dynart\Press\Service\PluginService;
 use Dynart\Press\Service\UserService;
 
-class PressAppSetup {
+class PressAppHelper {
 
     const NAMESPACE_ENTITY = "Dynart\\Press\\Entity";
     const NAMESPACE_ADMIN_CONTROLLER = 'Dynart\\Press\\Admin\\Controller';
@@ -51,59 +52,59 @@ class PressAppSetup {
 
     public static function create(App $app, bool $isAdmin) {
 
-        $app->add(PdoBuilder::class);
-        $app->add(Database::class, MariaDatabase::class);
-        $app->add(EntityManager::class);
-        $app->add(QueryBuilder::class, MariaQueryBuilder::class);
-        $app->add(QueryExecutor::class);
-        $app->add(ColumnAnnotation::class);
-        $app->add(Translation::class);
-        $app->add(RouteAnnotation::class);
+        Micro::add(PdoBuilder::class);
+        Micro::add(Database::class, MariaDatabase::class);
+        Micro::add(EntityManager::class);
+        Micro::add(QueryBuilder::class, MariaQueryBuilder::class);
+        Micro::add(QueryExecutor::class);
+        Micro::add(ColumnAnnotation::class);
+        Micro::add(Translation::class);
+        Micro::add(RouteAnnotation::class);
 
-        $app->add(Db_Migration::class);
-        $app->add(Node::class);
-        $app->add(User::class);
-        $app->add(User_Role::class);
-        $app->add(User_Permission::class);
-        $app->add(Role::class);
-        $app->add(Role_Text::class);
-        $app->add(Role_Permission::class);
-        $app->add(Permission::class);
-        $app->add(Permission_Text::class);
-        $app->add(Plugin::class);
-        $app->add(Setting::class);
+        Micro::add(Db_Migration::class);
+        Micro::add(Node::class);
+        Micro::add(User::class);
+        Micro::add(User_Role::class);
+        Micro::add(User_Permission::class);
+        Micro::add(Role::class);
+        Micro::add(Role_Text::class);
+        Micro::add(Role_Permission::class);
+        Micro::add(Permission::class);
+        Micro::add(Permission_Text::class);
+        Micro::add(Plugin::class);
+        Micro::add(Setting::class);
 
-        $app->add(DbMigrationService::class);
-        $app->add(DateService::class);
-        $app->add(EventService::class);
-        $app->add(PluginRepository::class);
-        $app->add(MediaService::class);
-        $app->add(MediaRepository::class);
-        $app->add(UserService::class);
-        $app->add(NodeService::class);
+        Micro::add(DbMigrationService::class);
+        Micro::add(DateService::class);
+        Micro::add(EventService::class);
+        Micro::add(PluginRepository::class);
+        Micro::add(MediaService::class);
+        Micro::add(MediaRepository::class);
+        Micro::add(UserService::class);
+        Micro::add(NodeService::class);
 
         $app->addMiddleware(LocaleResolver::class);
         $app->addMiddleware(AnnotationProcessor::class);
         $app->addMiddleware(PluginService::class);
 
-        $annotations = $app->get(AnnotationProcessor::class);
+        $annotations = Micro::get(AnnotationProcessor::class);
         $annotations->add(RouteAnnotation::class);
         $annotations->add(ColumnAnnotation::class);
         $annotations->addNamespace(self::NAMESPACE_ENTITY);
 
         if ($isAdmin) {
             $annotations->addNamespace(self::NAMESPACE_ADMIN_CONTROLLER);
-            $app->add(DashboardController::class);
+            Micro::add(DashboardController::class);
         } else {
             $annotations->addNamespace(self::NAMESPACE_CONTROLLER);
-            $app->add(HomeController::class);
+            Micro::add(HomeController::class);
         }
     }
 
-    public static function init(App $app, bool $isAdmin) {
+    public static function init(bool $isAdmin) {
         /** @var Translation $translation */
-        $translation = $app->get(Translation::class);
-        $view = $app->get(View::class);
+        $translation = Micro::get(Translation::class);
+        $view = Micro::get(View::class);
 
         if ($isAdmin) {
             $translation->add('admin', '~/admin/translations');
@@ -112,12 +113,12 @@ class PressAppSetup {
             $translation->add('press', '~/translations');
         }
 
-        $dbMigrationService = $app->get(DbMigrationService::class);
+        $dbMigrationService = Micro::get(DbMigrationService::class);
         $dbMigrationService->addFolder(self::NAMESPACE_ENTITY, '~/content/sql');
     }
 
-    public static function initPlugins(App $app, bool $isAdmin) {
-        $pluginService = $app->get(PluginService::class);
+    public static function initPlugins(bool $isAdmin) {
+        $pluginService = Micro::get(PluginService::class);
         if ($isAdmin) {
             $pluginService->adminInit();
         } else {
@@ -125,13 +126,13 @@ class PressAppSetup {
         }
 
         /*
-        $eventService = $this->get(EventService::class);
+        $eventService = Micro::get(EventService::class);
         $eventService->subscribe(User::EVENT_BEFORE_SAVE, function(User $user) {
             var_dump($user);
         });
 
-        $db = $this->get(Database::class);
-        $nodeService = $this->get(NodeService::class);
+        $db = Micro::get(Database::class);
+        $nodeService = Micro::get(NodeService::class);
         $db->runInTransaction(function () use ($nodeService) {
             $user = new User();
             $user->active = 1;
