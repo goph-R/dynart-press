@@ -7,6 +7,7 @@ use Dynart\Micro\Entities\Database;
 use Dynart\Micro\Entities\EntityManager;
 use Dynart\Micro\Entities\Entity;
 
+use Dynart\Micro\Micro;
 use Dynart\Press\Entity\Node;
 use Dynart\Press\Entity\NodeEntity;
 
@@ -15,51 +16,40 @@ class NodeService {
     /** @var Database */
     protected $db;
 
-    /** @var EventService */
-    protected $eventService;
-
     /** @var EntityManager */
-    protected $entityManager;
+    protected $em;
 
     /** @var UserService */
     protected $userService;
 
     /** @var DateService */
-    protected $nowProvider;
+    protected $dateService;
 
-    public function __construct(Database $db, EventService $eventService, EntityManager $entityManager, DateService $nowProvider) {
+    public function __construct(Database $db, EntityManager $em, DateService $dateService) {
         $this->db = $db;
-        $this->eventService = $eventService;
-        $this->entityManager = $entityManager;
-        $this->nowProvider = $nowProvider;
+        $this->em = $em;
+        $this->dateService = $dateService;
     }
 
     public function postConstruct() {
-        $this->userService = App::instance()->get(UserService::class);
+        $this->userService = Micro::get(UserService::class);
     }
 
     public function save(NodeEntity $entity) {
         $currentUserId = $this->userService->current()->id;
-        $now = $this->nowProvider->now();
+        $now = $this->dateService->now();
         if ($entity->isNew()) {
-            $node = new Node();
-            $node->type = $this->entityManager->tableNameByClass(get_class($entity), false);
-            $node->created_by = $currentUserId;
-            $node->created_at = $now;
-            $this->saveEntity('node', $node);
-            $entity->id = $node->id;
+            $entity->id = $this->em->insert(Node::class, [
+                'type' => get_class($entity),
+                'created_by' => $currentUserId,
+                'created_at' => $now
+            ]);
         } else {
-            $node = $this->entityManager->findById(Node::class, $entity->id);
-            $node->updated_by = $currentUserId;
-            $node->updated_at = $now;
-            $this->saveEntity('node', $node);
+            $this->em->update(Node::class, [
+                'updated_by' => $currentUserId,
+                'updated_at' => $now
+            ], 'id = :id', [':id' => $entity->id]);
         }
-        $this->saveEntity($node->type, $entity);
-    }
-
-    protected function saveEntity(string $type, Entity $entity): void {
-        $this->eventService->emit($type.':before_save', [$entity]);
-        $this->entityManager->save($entity);
-        $this->eventService->emit($type.':after_save', [$entity]);
+        $this->em->save($entity);
     }
 }

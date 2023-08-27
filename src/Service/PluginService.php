@@ -4,8 +4,12 @@ namespace Dynart\Press\Service;
 
 use Dynart\Micro\App;
 use Dynart\Micro\Config;
+use Dynart\Micro\Entities\Query;
+use Dynart\Micro\Entities\QueryExecutor;
+use Dynart\Micro\Micro;
 use Dynart\Micro\Middleware;
 
+use Dynart\Press\Entity\Plugin;
 use Dynart\Press\PluginInterface;
 
 class PluginService implements Middleware {
@@ -15,8 +19,8 @@ class PluginService implements Middleware {
     /** @var Config */
     private $config;
 
-    /** @var PluginRepository */
-    private $repository;
+    /** @var QueryExecutor */
+    private $queryExecutor;
 
     /** @var DbMigrationService */
     private $dbMigrationService;
@@ -30,14 +34,23 @@ class PluginService implements Middleware {
     /** @var string[] */
     private $adminScripts = [];
 
-    public function __construct(Config $config, PluginRepository $repository, DbMigrationService $dbMigrationService) {
+    public function __construct(Config $config, QueryExecutor $qe, DbMigrationService $dbMigrationService) {
         $this->config = $config;
-        $this->repository = $repository;
+        $this->queryExecutor = $qe;
         $this->dbMigrationService = $dbMigrationService;
     }
 
+    public function findAllActiveNames() {
+        if ($this->queryExecutor->isTableExist(Plugin::class)) {
+            $query = new Query(Plugin::class);
+            $query->addCondition('active = 1');
+            return $this->queryExecutor->findAllColumn($query, 'name');
+        }
+        return [];
+    }
+
     public function run(): void {
-        $names = $this->repository->findAllActiveNames();
+        $names = $this->findAllActiveNames();
         foreach ($names as $name) { // TODO: dependency?
             $this->add($name);
         }
@@ -66,11 +79,8 @@ class PluginService implements Middleware {
     private function add(string $name): void {
         $namespace = self::NAMESPACE_PREFIX . "\\$name";
         $class = "$namespace\\{$name}Plugin";
-
-        $app = App::instance();
-        $app->add($class);
-        $this->activePlugins[] = $app->get($class);
-
+        Micro::add($class);
+        $this->activePlugins[] = Micro::get($class);
         $dir = $this->config->getFullPath("~/content/plugins/$name/sql");
         if (file_exists($dir)) {
             $this->dbMigrationService->addFolder($namespace, $dir);

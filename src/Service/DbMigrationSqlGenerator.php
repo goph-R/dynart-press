@@ -10,6 +10,8 @@ use Dynart\Micro\Entities\Entity;
 use Dynart\Micro\Entities\EntityManager;
 use Dynart\Micro\Entities\QueryBuilder;
 use Dynart\Micro\Entities\QueryExecutor;
+use Dynart\Micro\Micro;
+use Dynart\Micro\MicroException;
 
 class DbMigrationSqlGenerator {
 
@@ -20,7 +22,7 @@ class DbMigrationSqlGenerator {
     private $db;
 
     /** @var EntityManager */
-    private $entityManager;
+    private $em;
 
     /** @var QueryBuilder */
     private $queryBuilder;
@@ -34,19 +36,17 @@ class DbMigrationSqlGenerator {
     private $createdClassNames = [];
     private $tablePrefix;
 
-    const PLACEHOLDER_TABLE_PREFIX = '!tablePrefix_';
-
     public function __construct(
         Config $config,
         Database $db,
-        EntityManager $entityManager,
+        EntityManager $em,
         QueryBuilder $queryBuilder,
         QueryExecutor $queryExecutor,
         DateService $dateService
     ) {
         $this->config = $config;
         $this->db = $db;
-        $this->entityManager = $entityManager;
+        $this->em = $em;
         $this->queryBuilder = $queryBuilder;
         $this->queryExecutor = $queryExecutor;
         $this->dateService = $dateService;
@@ -66,15 +66,15 @@ class DbMigrationSqlGenerator {
     }
 
     private function generateCreateTables($classNames, $dbTableNames, $result): string {
-        $this->entityManager->setTableNamePrefix(self::PLACEHOLDER_TABLE_PREFIX);
         $newClassNames = [];
         foreach ($classNames as $className) {
-            $classTableName = $this->tablePrefix.$this->entityManager->tableNameByClass($className, false);
+            $classTableName = $this->tablePrefix.$this->em->tableNameByClass($className, false);
             if (is_subclass_of($className, Entity::class)
                 && !in_array($classTableName, $dbTableNames)) {
                 $newClassNames[] = $className;
             }
         }
+        $this->em->setUseEntityHashName(true);
         $this->createdClassNames = ['Dynart\\Press\\Entity\\Db_Migration'];
         foreach ($newClassNames as $className) {
             $result .= $this->generateCreateTable($newClassNames, $className);
@@ -87,11 +87,11 @@ class DbMigrationSqlGenerator {
             return '';
         }
         if (in_array($className, $dependencyStack)) {
-            throw new AppException("Circular entity dependency: ".join(' <- ', $dependencyStack));
+            throw new MicroException("Circular entity dependency: ".join(' <- ', $dependencyStack));
         }
         $dependencyStack[] = $className;
         $result = '';
-        $columns = $this->entityManager->tableColumns($className);
+        $columns = $this->em->tableColumns($className);
         foreach ($columns as $column) {
             if (array_key_exists(EntityManager::COLUMN_FOREIGN_KEY, $column)) {
                 $foreignKey = $column[EntityManager::COLUMN_FOREIGN_KEY];
@@ -107,9 +107,8 @@ class DbMigrationSqlGenerator {
 
     private function findClassNames(string $namespace): array {
         /** @var App $app */
-        $app = App::instance();
         $result = [];
-        foreach ($app->interfaces() as $className) {
+        foreach (Micro::interfaces() as $className) {
             if (substr($className, 0, strlen($namespace)) == $namespace) {
                 $result[] = $className;
             }
@@ -118,13 +117,6 @@ class DbMigrationSqlGenerator {
     }
 
     private function generateAlterTables($classNames): string {
-        foreach ($classNames as $className) {
-            $columns = $this->entityManager->tableColumns($className);
-            $this->entityManager->setTableNamePrefix($this->tablePrefix);
-            $dbColumns = $this->queryExecutor->findColumns($className);
-            $this->entityManager->setTableNamePrefix(self::PLACEHOLDER_TABLE_PREFIX);
-            
-        }
         return '';
     }
 }

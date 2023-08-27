@@ -12,7 +12,7 @@ class Node extends Entity {
     /** @column { "type": "int", "notNull": true, "primaryKey": true, "autoIncrement": true } */
     public $id;
 
-    /** @column { "type": "string", "size": 50, "fixSize": true, "notNull": true } */
+    /** @column { "type": "string", "size": 255, "fixSize": true, "notNull": true } */
     public $type;
 
     /** @column { "type": "int", "foreignKey": ["Dynart\\Press\\Entity\\User", "id"], "onDelete": "cascade" } */

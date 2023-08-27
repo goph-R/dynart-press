@@ -40,7 +40,7 @@ class HomeController {
         $this->mediaService->sync();
 
         $images = $this->mediaService->findImages();
-        $columnCount = 6;
+        $columnCount = 5;
         $columns = [];
         $heights = [];
         for ($i = 0; $i < $columnCount; $i++) {
@@ -77,8 +77,6 @@ class HomeController {
      * @route GET /test
      */
     public function test() {
-        return $this->view->fetch('test', [
 
-        ]);
     }
 }

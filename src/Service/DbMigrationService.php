@@ -2,7 +2,7 @@
 
 namespace Dynart\Press\Service;
 
-use Dynart\Micro\AppException;
+use Dynart\Micro\MicroException;
 use Dynart\Micro\Config;
 use Dynart\Micro\Entities\Database;
 use Dynart\Micro\Entities\EntityManager;
@@ -63,7 +63,7 @@ class DbMigrationService {
 
     public function folderPath(string $namespace) {
         if (!array_key_exists($namespace, $this->folders)) {
-            throw new AppException("Namespace doesn't exist: ".$namespace);
+            throw new MicroException("Namespace doesn't exist: ".$namespace);
         }
         return $this->folders[$namespace];
     }
@@ -121,10 +121,10 @@ class DbMigrationService {
         /** @var Db_Migration $dbMigration */
         foreach ($dbMigrations as $dbMigration) {
             if (!array_key_exists($dbMigration->name, $sqlFiles)) {
-                throw new AppException("Missing SQL migration file '$dir/{$dbMigration->name}.sql'");
+                throw new MicroException("Missing SQL migration file '$dir/{$dbMigration->name}.sql'");
             }
             if ($dbMigration->hash != $sqlFiles[$dbMigration->name]['hash']) {
-                throw new AppException("Hash does not match in '$dir/{$dbMigration->name}.sql'");
+                throw new MicroException("Hash does not match in '$dir/{$dbMigration->name}.sql'");
             }
             $migratedNames[] = $dbMigration->name;
         }
@@ -148,10 +148,7 @@ class DbMigrationService {
 
     private function migrateSqlFile(string $namespace, string $name, array $sqlFile): void {
         $this->db->runInTransaction(function () use ($namespace, $name, $sqlFile) {
-            $this->db->query(
-                $sqlFile['content'],
-                ['!tablePrefix_' => $this->db->configValue('table_prefix')]
-            );
+            $this->db->query($sqlFile['content']);
             $dbMigration = new Db_Migration();
             $dbMigration->name = $name;
             $dbMigration->namespace = $namespace;

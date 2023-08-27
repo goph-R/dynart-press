@@ -11,7 +11,7 @@ function runCli() { // TODO
     if (in_array('-admin', $_SERVER['argv'])) {
         $configPaths[] = "admin/admin.config.ini.php";
     }
-    \Dynart\Micro\App::run(new \Dynart\Press\PressCliApp($configPaths));
+    \Dynart\Micro\Micro::run(new \Dynart\Press\PressCliApp($configPaths));
 }
 
 runCli();

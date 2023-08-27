@@ -2,42 +2,53 @@
 
 namespace Dynart\Press\Service;
 
-use Dynart\Micro\AppException;
 use Dynart\Micro\Config;
+use Dynart\Micro\Entities\EntityManager;
+use Dynart\Micro\Entities\Query;
+use Dynart\Micro\Entities\QueryExecutor;
+use Dynart\Micro\MicroException;
+use Dynart\Press\Entity\Image;
 
 class MediaService {
 
     /** @var Config */
     private $config;
 
-    /** @var MediaRepository */
-    private $repository;
+    /** @var EntityManager */
+    private $em;
+
+    /** @var QueryExecutor */
+    private $queryExecutor;
 
     private $fullDirPath;
     private $dir;
 
-    public function __construct(Config $config, MediaRepository $repository) {
+    public function __construct(Config $config, EntityManager $em, QueryExecutor $qe) {
         $this->config = $config;
-        $this->repository = $repository;
+        $this->em = $em;
+        $this->queryExecutor = $qe;
     }
 
     public function init(string $dir) {
         $this->dir = $dir;
         $this->fullDirPath = $this->config->get('photos.media_dir').'/'.$dir;
         if (!file_exists($this->fullDirPath)) {
-            throw new AppException("Directory doesn't exist: $dir");
+            throw new MicroException("Directory doesn't exist: $dir");
         }
     }
 
     public function sync() {
 
-        $images = $this->repository->findAll(null, ['dir' => $this->dir]);
+        $query = new Query(Image::class);
+        $query->addCondition('dir = :dir', [':dir' => $this->dir]);
+
+        $images = $this->queryExecutor->findAll($query);
 
         // remove deleted images
         foreach ($images as $image) {
             $fullPath = $this->fullDirPath.'/'.$image['path'];
             if (!file_exists($fullPath)) {
-                $this->repository->deleteById($image['id']);
+                $this->em->deleteById(Image::class, $image['id']);
             }
         }
 
@@ -80,7 +91,7 @@ class MediaService {
 
             // create or update image
             if ($updateId) {
-                $this->repository->update([
+                $this->em->update(Image::class, [
                     'updated_at' => date($dateFormat),
                     'path_updated_at' => $pathUpdatedAt,
                     'width' => $imageSize[0],
@@ -89,7 +100,7 @@ class MediaService {
                     'id = :id', ['id' => $updateId]
                 );
             } else {
-                $this->repository->insert([
+                $this->em->insert(Image::class, [
                     'dir' => $this->dir,
                     'path' => $entry,
                     'path_updated_at' => $pathUpdatedAt,
@@ -103,12 +114,11 @@ class MediaService {
         $d->close();
     }
 
+
     public function findImages() {
-        return $this->repository->findAll(null, [
-            'dir' => $this->dir,
-            'order_by' => 'created_at',
-            'order_dir' => 'desc',
-            'with_tags' => true
-        ]);
+        $query = new Query(Image::class);
+        $query->addCondition('dir = :dir', [':dir' => $this->dir]);
+        $query->addOrderBy('created_at', 'desc');
+        return $this->queryExecutor->findAll($query);
     }
 }
