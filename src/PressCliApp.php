@@ -112,10 +112,11 @@ class PressCliApp extends CliApp {
     public function appRoutes() {
         /** @var Router $router */
         $router = Micro::get(Router::class);
+        $routePrefix = str_repeat('/?', count($router->prefixVariables()));
         foreach ($router->routes() as $method => $methodRoutes) {
             foreach ($methodRoutes as $route => $routeData) {
                 $this->output->setColor(CliOutput::WHITE);
-                $this->output->writeLine("$method $route");
+                $this->output->writeLine("$method $routePrefix$route");
                 $this->output->setColor(CliOutput::DARK_GRAY);
                 $this->output->writeLine("$routeData[0]::$routeData[1]\n");
             }

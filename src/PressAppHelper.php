@@ -36,16 +36,18 @@ use Dynart\Press\Entity\Image;
 
 use Dynart\Press\Entity\User_Setting;
 use Dynart\Press\Service\DbMigrationService;
-use Dynart\Press\Service\MediaRepository;
 use Dynart\Press\Service\MediaService;
 use Dynart\Press\Service\NodeService;
 use Dynart\Press\Service\DateService;
-use Dynart\Press\Service\PluginRepository;
 use Dynart\Press\Service\PluginService;
 use Dynart\Press\Service\UserService;
 
+use Dynart\Press\OAuth\GoogleOAuth;
+
+
 use Dynart\Press\Admin\Controller\DashboardController;
 use Dynart\Press\Controller\HomeController;
+use Dynart\Press\Controller\OAuthController;
 
 class PressAppHelper {
 
@@ -80,6 +82,8 @@ class PressAppHelper {
         Micro::add(Image::class); // TODO: remove
 
         // services
+        Micro::add(GoogleOAuth::class); // TODO: use generalized OAuth class
+
         Micro::add(Translation::class);
         Micro::add(DbMigrationService::class);
         Micro::add(DateService::class);
@@ -109,6 +113,7 @@ class PressAppHelper {
         } else {
             $annotations->addNamespace(self::NAMESPACE_CONTROLLER);
             Micro::add(HomeController::class);
+            Micro::add(OAuthController::class);
         }
     }
 

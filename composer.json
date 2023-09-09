@@ -20,7 +20,9 @@
     "require": {
         "php": ">=7.1.0",
         "dynart/micro": "@dev",
-        "dynart/micro-entities": "@dev"
+        "dynart/micro-entities": "@dev",
+        "firebase/php-jwt": "dev-main",
+        "phpseclib/phpseclib": "~2.0"
     },
     "repositories": {
         "dynart-micro": {
