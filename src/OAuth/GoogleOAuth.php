@@ -49,6 +49,18 @@ class GoogleOAuth {
         return json_decode($response, true);
     }
 
+    public function decodeIdToken(string $idToken) {
+        $googlePublicKeys = json_decode(file_get_contents('google-keys.json'), true); // TODO: how to get this properly?
+        $keys = [];
+        foreach ($googlePublicKeys['keys'] as $googleKey) {
+            $keys[$googleKey['kid']] = new Key(
+                $this->loadPhpsecPublicKey($googleKey['n'], $googleKey['e']),
+                $googleKey['alg']
+            );
+        }
+        return JWT::decode($idToken, $keys);
+    }
+
     protected function authUrl() {
         return $this->config->get(self::CONFIG_AUTH_URL);
     }
@@ -61,7 +73,7 @@ class GoogleOAuth {
         return $this->config->get(self::CONFIG_CLIENT_ID);
     }
 
-    public function clientSecret() {
+    protected function clientSecret() {
         return $this->config->get(self::CONFIG_CLIENT_SECRET);
     }
 
@@ -100,20 +112,7 @@ class GoogleOAuth {
         return $response;
     }
 
-
-    public function decodeIdToken(string $idToken) {
-        $googlePublicKeys = json_decode(file_get_contents('google-keys.json'), true); // TODO: how to get this properly?
-        $keys = [];
-        foreach ($googlePublicKeys['keys'] as $googleKey) {
-            $keys[$googleKey['kid']] = new Key(
-                $this->loadPhpsecPublicKey($googleKey['n'], $googleKey['e']),
-                $googleKey['alg']
-            );
-        }
-        return JWT::decode($idToken, $keys);
-    }
-
-    private function loadPhpsecPublicKey(string $modulus, string $exponent): string { // TODO: phpseclib3
+    protected function loadPhpsecPublicKey(string $modulus, string $exponent): string { // TODO: phpseclib3
         $key = new RSA();
         $key->loadKey([
             'n' => new BigInteger2(JWT::urlsafeB64Decode($modulus), 256),

@@ -21,7 +21,7 @@ class OAuthController {
     private $app;
 
     public function __construct(GoogleOAuth $oauth, Request $request) {
-        $this->app = Micro::instance();
+        $this->app = Micro::app();
         $this->request = $request;
 
         // TODO: strategy pattern for different types of login (Google, Apple, Facebook, Microsoft)

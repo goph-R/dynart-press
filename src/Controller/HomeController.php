@@ -63,6 +63,9 @@ class HomeController {
             $columns[$col][] = $image;
             $heights[$col] += $image['height'] / $image['width'];
         }
+        foreach ($columns as $col => $data) {
+            shuffle($columns[$col]);
+        }
 
         return $this->view->fetch('index', [
             'imageColumns' => $columns,
