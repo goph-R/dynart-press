@@ -1,11 +1,11 @@
 ;<?php /*
 
 log.level = "debug"
-log.dir = "c:/xampp/htdocs/dynart-press/content/logs"
+log.dir = "/var/www/dynart-press/content/logs"
 
 app.environment = "dev"
 app.base_url = "http://localhost/dynart-press"
-app.root_path = "c:/xampp/htdocs/dynart-press"
+app.root_path = "/var/www/dynart-press"
 app.error_pages_folder = "~/static/errors"
 
 router.index_file = "index.php"
@@ -17,9 +17,9 @@ view.default_folder = "~/views"
 translation.all = hu,en
 translation.default = en
 
-database.default.name = "photos"
+database.default.name = "dpress"
 database.default.dsn = "mysql:localhost"
-database.default.username = "root"
+database.default.username = "gopher"
 database.default.password = ""
 
 ; Only can be set once at the beginning!
