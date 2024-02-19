@@ -163,26 +163,15 @@
 </div>
 
 <?php $this->endBlock('content') ?>
-<?php $this->addScript('/admin/static/jquery.admin-app.js', ['type' => 'module', 'defer' => null]) ?>
+<?php $this->addScript('/admin/static/menu.js') ?>
+<?php $this->addScript('/admin/static/router.js') ?>
+<?php $this->addScript('/admin/static/admin-app.js') ?>
 <?php $this->startBlock('scripts') ?>
 <script>
 
 $(document).ready(function() {
 
-  const adminApp = $('main').adminApp();
-
-  const pages = {
-    'dashboard': new Page(adminApp),
-    'posts': new Page(adminApp),
-    'media': new Page(adminApp),
-    'categories': new Page(adminApp),
-    'tags': new Page(adminApp),
-    'menus': new Page(adminApp),
-    'users': new Page(adminApp),
-    'groups': new Page(adminApp),
-    'permissions': new Page(adminApp),
-    'settings': new Page(adminApp)
-  };
+  const adminApp = new AdminApp()
 
   const routes = {
       '/': function () { adminApp.showPage('dashboard') },
@@ -215,7 +204,6 @@ $(document).ready(function() {
   // TODO: plugins should init here
 
   adminApp.init({
-      pages: pages,
       routes: routes,
       menuItems: menuItems
   });

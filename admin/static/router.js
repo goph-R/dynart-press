@@ -28,5 +28,3 @@ const Router = function() {
     });
 
 };
-
-export { Router }

@@ -56,5 +56,3 @@ const Menu = function($menu, router) {
     }
 
 };
-
-export { Menu }

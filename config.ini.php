@@ -4,7 +4,7 @@ log.level = "debug"
 log.dir = "/var/www/dynart-press/content/logs"
 
 app.environment = "dev"
-app.base_url = "http://localhost/dynart-press"
+app.base_url = "http://dpress.local"
 app.root_path = "/var/www/dynart-press"
 app.error_pages_folder = "~/static/errors"
 

@@ -25,14 +25,14 @@
         "phpseclib/phpseclib": "~2.0"
     },
     "repositories": {
-        "dynart-micro": {
+        "dynart/micro": {
             "type": "path",
             "url": "../dynart-micro",
             "options": {
                 "symlink": true
             }
         },
-        "dynart-micro-entities": {
+        "dynart/micro-entities": {
             "type": "path",
             "url": "../dynart-micro-entities",
             "options": {
